@@ -322,16 +322,19 @@
             switch (key) {
                 case 'cervix_figo2018':
                     if (currentM === 'M1') stage = 'IVB';
+                    else if (currentT === 'T4') stage = 'IVA'; // T4 ghi đè N1/N2
                     else if (currentN === 'N2') stage = 'IIIC2';
                     else if (currentN === 'N1') stage = 'IIIC1';
-                    else if (currentT === 'T4') stage = 'IVA';
-                    else stage = currentT.replace('T', '').toUpperCase(); // Lấy chữ sau T (VD: T1a1 -> IA1)
+                    else stage = currentT.replace('T', '').toUpperCase(); // IA1, IB2...
                     extra = "Theo hệ thống FIGO 2018";
                     break;
 
                 case 'ovary_figo':
                     if (currentM === 'M1b') stage = 'IVB';
                     else if (currentM === 'M1a') stage = 'IVA';
+                    else if (currentT === 'T3c') stage = 'IIIC'; // T3a/b/c ghi đè N1
+                    else if (currentT === 'T3b') stage = 'IIIB';
+                    else if (currentT === 'T3a') stage = 'IIIA2';
                     else if (currentN === 'N1') stage = 'IIIA1';
                     else stage = currentT.replace('T', '').toUpperCase();
                     extra = "Theo hệ thống FIGO";
@@ -339,9 +342,9 @@
 
                 case 'endometrial_figo':
                     if (currentM === 'M1') stage = 'IVB';
+                    else if (currentT === 'T4') stage = 'IVA'; // T4 ghi đè N1/N2
                     else if (currentN === 'N2') stage = 'IIIC2';
                     else if (currentN === 'N1') stage = 'IIIC1';
-                    else if (currentT === 'T4') stage = 'IVA';
                     else stage = currentT.replace('T', '').toUpperCase();
                     extra = "Theo hệ thống FIGO";
                     break;
