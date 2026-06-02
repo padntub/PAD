@@ -3,264 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ứng Dụng Quản Lý Xử Trí Tăng Kali Máu (Hyperkalemia App)</title>
+    <title>Ứng Dụng Quản Lý Xử Trí Tăng Kali Máu - OncoPortal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #4f46e5;
-            --primary-dark: #3730a3;
-            --secondary-color: #0f172a;
-            --bg-light: #f8fafc;
-            --border-color: #cbd5e1;
-            --text-main: #334155;
-            --success: #16a34a;
-            --warning: #ca8a04;
-            --danger: #dc2626;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-main);
-            background-color: var(--bg-light);
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 2.5rem 1rem;
-            text-align: center;
-            border-bottom: 5px solid var(--primary-color);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.2rem;
-            font-weight: 700;
-        }
-
-        header p {
-            margin: 0.5rem 0 0 0;
-            font-size: 1.1rem;
-            color: #94a3b8;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .section-card {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
-            border-left: 5px solid var(--primary-color);
-        }
-
-        .section-card.app-box {
-            border-left-color: var(--danger);
-        }
-
-        h2 {
-            color: var(--secondary-color);
-            margin-top: 0;
-            font-size: 1.5rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 0.5rem;
-        }
-
-        h3 {
-            color: var(--primary-dark);
-            margin-top: 1.5rem;
-            font-size: 1.2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-            color: var(--secondary-color);
-        }
-
-        input, select {
-            width: 100%;
-            padding: 0.6rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 2rem;
-        }
-
-        .result-box {
-            padding: 1.2rem;
-            border-radius: 6px;
-            margin-top: 1.5rem;
-        }
-
-        .result-safe { background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
-        .result-warning { background-color: #fffde7; border: 1px solid #fef08a; color: #854d0e; }
-        .result-danger { background-color: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
-
-        .badge {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-        .badge-danger { background-color: #fee2e2; color: #ef4444; }
-        .badge-warning { background-color: #fef9c3; color: #eab308; }
-        .badge-info { background-color: #e0f2fe; color: #0ea5e9; }
-
-        .alert-flash {
-            background-color: #fff1f2;
-            border: 1px solid #fecdd3;
-            color: #9f1239;
-            padding: 0.8rem;
-            border-radius: 4px;
-            margin-top: 1rem;
-            font-weight: bold;
-        }
-
-        .note-text {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-top: 1rem;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr; }
-        }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0fdfa; }
+        .hero-gradient { background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%); }
     </style>
 </head>
-<body>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <header>
-        <h1>Kế Hoạch & Bản Mẫu Ứng Dụng Quản Lý Tăng Kali Máu</h1>
-        <p>Phác đồ dịch truyền và phân phối liều lượng Insulin-Glucose an toàn tại giường bệnh</p>
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="bg-teal-600 text-white p-2 rounded-lg">
+                    <i class="fa-solid fa-staff-snake text-xl"></i>
+                </div>
+                <span class="font-black text-xl text-teal-800 tracking-tight">Onco<span class="text-sky-500">Portal</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Trang chủ</a>
+                <a href="#" class="text-teal-600 font-bold border-b-2 border-teal-600 px-1 py-2">Công cụ</a>
+                <a href="#" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Phác đồ</a>
+                <a href="#" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Về chúng tôi</a>
+            </nav>
+        </div>
     </header>
 
-    <div class="container">
+    <section class="hero-gradient text-white py-12 px-4">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-3xl md:text-4xl font-black mb-4 drop-shadow-md">Kế Hoạch & Bản Mẫu Ứng Dụng Quản Lý Tăng Kali Máu</h1>
+            <p class="text-lg text-teal-50 max-w-3xl mx-auto font-medium opacity-90">
+                Phác đồ dịch truyền và phân phối liều lượng Insulin-Glucose an toàn tại giường bệnh
+            </p>
+        </div>
+    </section>
 
-        <div class="section-card app-box">
-            <h2>CÔNG CỤ LIỆU PHÁP DỊCH TRUYỀN TRONG TĂNG KALI MÁU</h2>
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <div class="bg-white rounded-2xl p-6 md:p-8 border-l-4 border-rose-500 shadow-sm mb-8 relative overflow-hidden">
+            <h2 class="text-2xl font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">CÔNG CỤ LIỆU PHÁP DỊCH TRUYỀN TRONG TĂNG KALI MÁU</h2>
             
-            <div class="grid-2">
-                <div>
-                    <h3>Thông số lâm sàng</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-5 space-y-5">
+                    <h3 class="text-lg font-bold text-rose-700 flex items-center"><i class="fa-solid fa-notes-medical mr-2"></i>Thông số lâm sàng</h3>
                     
-                    <div class="form-group">
-                        <label for="weight">Cân nặng thực tế (kg)</label>
-                        <input type="number" id="weight" value="60" min="20" max="150" oninput="calculateHyperkalemia()">
+                    <div>
+                        <label for="weight" class="block font-semibold text-slate-700 mb-1 text-sm">Cân nặng thực tế (kg)</label>
+                        <input type="number" id="weight" value="60" min="20" max="150" oninput="calculateHyperkalemia()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm">
                     </div>
 
-                    <div class="form-group">
-                        <label for="current_k">Nồng độ Kali (K+) máu hiện tại (mmol/L)</label>
-                        <input type="number" id="current_k" value="6.7" step="0.1" min="3.5" max="10.0" oninput="calculateHyperkalemia()">
+                    <div>
+                        <label for="current_k" class="block font-semibold text-slate-700 mb-1 text-sm">Nồng độ Kali (K+) máu hiện tại (mmol/L)</label>
+                        <input type="number" id="current_k" value="6.7" step="0.1" min="3.5" max="10.0" oninput="calculateHyperkalemia()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm">
                     </div>
 
-                    <div class="form-group">
-                        <label for="ecg_changes">Thay đổi trên Điện tâm đồ (ECG)</label>
-                        <select id="ecg_changes" onchange="calculateHyperkalemia()">
+                    <div>
+                        <label for="ecg_changes" class="block font-semibold text-slate-700 mb-1 text-sm">Thay đổi trên Điện tâm đồ (ECG)</label>
+                        <select id="ecg_changes" onchange="calculateHyperkalemia()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm">
                             <option value="yes">Có (Sóng T cao nhọn, QRS giãn rộng, hoặc vô tâm thu)</option>
                             <option value="no">Không có (ECG bình thường)</option>
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="glucose_type">Dịch truyền Glucose có sẵn để pha dịch</label>
-                        <select id="glucose_type" onchange="calculateHyperkalemia()">
+                    <div>
+                        <label for="glucose_type" class="block font-semibold text-slate-700 mb-1 text-sm">Dịch truyền Glucose có sẵn để pha dịch</label>
+                        <select id="glucose_type" onchange="calculateHyperkalemia()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm">
                             <option value="20">Glucose 20% chai 250 mL (Chứa 50g Glucose)</option>
                             <option value="10">Glucose 10% chai 500 mL (Chứa 50g Glucose)</option>
                             <option value="5">Glucose 5% chai 500 mL (Chứa 25g Glucose - Nguy cơ quá tải dịch)</option>
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="renal_status">Chức năng thận / Thể tích nước tiểu</label>
-                        <select id="renal_status" onchange="calculateHyperkalemia()">
+                    <div>
+                        <label for="renal_status" class="block font-semibold text-slate-700 mb-1 text-sm">Chức năng thận / Thể tích nước tiểu</label>
+                        <select id="renal_status" onchange="calculateHyperkalemia()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-sm">
                             <option value="normal">Bình thường / Tiểu được (>0.5 mL/kg/h)</option>
                             <option value="anuria">Vô niệu / Suy thận cấp hoặc mạn giai đoạn cuối</option>
                         </select>
                     </div>
                 </div>
 
-                <div>
-                    <h3>Phác đồ Can thiệp & Lệnh Dịch truyền</h3>
+                <div class="lg:col-span-7 flex flex-col">
+                    <h3 class="text-lg font-bold text-rose-700 flex items-center mb-4"><i class="fa-solid fa-clipboard-list mr-2"></i>Phác đồ Can thiệp & Lệnh Dịch truyền</h3>
                     
-                    <div id="result_area" class="result-box result-danger" style="display: block;">
-                        <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">
-                            <span id="severity_badge" class="badge badge-danger">Tăng K+ Nguy Kịch</span>
-                            <span id="analysis_title">Cấp cứu khẩn cấp bảo vệ màng cơ tim</span>
+                    <div id="result_area" class="bg-red-50 border border-red-200 text-red-900 p-5 rounded-xl">
+                        <div class="mb-4 flex items-center gap-3">
+                            <span id="severity_badge" class="px-3 py-1 text-xs font-bold uppercase rounded-md bg-red-200 text-red-700">Tăng K+ Nguy Kịch</span>
+                            <span id="analysis_title" class="font-bold text-lg">Cấp cứu khẩn cấp bảo vệ màng cơ tim</span>
                         </div>
 
-                        <div style="margin-top: 0.8rem; border-left: 3px solid #ef4444; padding-left: 0.6rem;">
-                            <strong>Bước 1: Ổn định màng tế bào cơ tim</strong><br>
-                            <span id="lbl_calcium_action">Chỉ định tiêm: Tĩnh mạch chậm 10 mL Canxi Clorua 10% (hoặc Canxi Gluconat 10%) trong 2 - 3 phút. Có thể nhắc lại sau 5 - 10 phút nếu ECG chưa cải thiện.</span>
+                        <div class="mt-3 border-l-4 border-red-500 pl-3">
+                            <strong class="text-red-700">Bước 1: Ổn định màng tế bào cơ tim</strong><br>
+                            <span id="lbl_calcium_action" class="text-sm md:text-base">Chỉ định tiêm: Tĩnh mạch chậm 10 mL Canxi Clorua 10% (hoặc Canxi Gluconat 10%) trong 2 - 3 phút. Có thể nhắc lại sau 5 - 10 phút nếu ECG chưa cải thiện.</span>
                         </div>
 
-                        <div style="margin-top: 0.8rem; border-left: 3px solid #3b82f6; padding-left: 0.6rem;">
-                            <strong>Bước 2: Phác đồ chuyển dịch ion (GI Regimen)</strong><br>
-                            • Loại dịch: <span id="lbl_selected_fluid">Glucose 20% (250 mL)</span><br>
-                            • Lượng Insulin Actrapid cần pha: <span id="lbl_insulin_dose">10</span> UI.<br>
-                            • Tốc độ truyền tĩnh mạch: Truyền trong <span id="lbl_infusion_time">30</span> phút (Tốc độ máy truyền dịch: <span id="lbl_pump_speed">500</span> mL/giờ).
+                        <div class="mt-4 border-l-4 border-blue-500 pl-3">
+                            <strong class="text-blue-700">Bước 2: Phác đồ chuyển dịch ion (GI Regimen)</strong><br>
+                            <div class="text-sm md:text-base space-y-1 mt-1">
+                                <div>• Loại dịch: <span id="lbl_selected_fluid" class="font-bold">Glucose 20% (250 mL)</span></div>
+                                <div>• Lượng Insulin Actrapid cần pha: <span id="lbl_insulin_dose" class="font-bold">10</span> UI.</div>
+                                <div>• Tốc độ truyền tĩnh mạch: Truyền trong <span id="lbl_infusion_time" class="font-bold">30</span> phút (Tốc độ máy truyền dịch: <span id="lbl_pump_speed" class="font-bold text-blue-700">500</span> mL/giờ).</div>
+                            </div>
                         </div>
 
-                        <div style="margin-top: 0.8rem; border-left: 3px solid #10b981; padding-left: 0.6rem;">
-                            <strong>Bước 3: Đào thải Kali ra ngoài cơ thể</strong><br>
-                            <span id="lbl_elimination_action">Tiêm tĩnh mạch Furosemide 20 - 40 mg. Theo dõi sát nước tiểu.</span>
+                        <div class="mt-4 border-l-4 border-emerald-500 pl-3">
+                            <strong class="text-emerald-700">Bước 3: Đào thải Kali ra ngoài cơ thể</strong><br>
+                            <span id="lbl_elimination_action" class="text-sm md:text-base mt-1 block">Tiêm tĩnh mạch Furosemide 20 - 40 mg. Theo dõi sát nước tiểu.</span>
                         </div>
 
-                        <div id="renal_warning" class="alert-flash" style="display: none;">
-                            ⚠️ LƯU Ý SUY THẬN VÔ NIỆU: Thuốc lợi tiểu mất tác dụng đào thải Kali. Chuẩn bị sẵn sàng trang thiết bị và hội chẩn lọc máu ngắt quãng (HD) hoặc CRRT cấp cứu lập tức nếu Kali tiếp tục tăng.
+                        <div id="renal_warning" class="bg-rose-100 border border-rose-300 text-rose-800 p-3 rounded-lg mt-5 font-bold text-sm hidden">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> LƯU Ý SUY THẬN VÔ NIỆU: Thuốc lợi tiểu mất tác dụng đào thải Kali. Chuẩn bị sẵn sàng trang thiết bị và hội chẩn lọc máu ngắt quãng (HD) hoặc CRRT cấp cứu lập tức nếu Kali tiếp tục tăng.
                         </div>
                     </div>
 
-                    <p class="note-text">
-                        <strong>Quy tắc an toàn lâm sàng:</strong><br>
-                        - Canxi chỉ bảo vệ tim tạm thời trong 30 - 60 phút, không làm giảm nồng độ Kali trong máu.<br>
-                        - Bắt buộc kiểm tra đường huyết mao mạch tại thời điểm: Trước truyền, sau truyền 30 phút, 1 giờ, 2 giờ để phòng ngừa hạ đường huyết muộn do Actrapid.
-                    </p>
+                    <div class="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200 text-sm text-slate-600">
+                        <strong class="text-slate-700 block mb-1"><i class="fa-solid fa-shield-halved text-amber-500 mr-1"></i> Quy tắc an toàn lâm sàng:</strong>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Canxi chỉ bảo vệ tim tạm thời trong 30 - 60 phút, không làm giảm nồng độ Kali trong máu.</li>
+                            <li>Bắt buộc kiểm tra đường huyết mao mạch tại thời điểm: Trước truyền, sau truyền 30 phút, 1 giờ, 2 giờ để phòng ngừa hạ đường huyết muộn do Actrapid.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="section-card">
-            <h2>PHẦN III: TÀI LIỆU THAM KHẢO Y HỌC CHỨNG CỨ (REFERENCES)</h2>
-            <ol>
+        <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm">
+            <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-book-medical text-teal-500 mr-2"></i> TÀI LIỆU THAM KHẢO Y HỌC CHỨNG CỨ</h2>
+            <ol class="list-decimal pl-5 space-y-2 text-slate-600 text-sm">
                 <li><strong>Bộ Y tế Việt Nam (2014):</strong> Hướng dẫn quy trình kỹ thuật chuyên ngành Hồi sức – Cấp cứu và Chống độc (Ban hành kèm theo Quyết định số 1904/QĐ-BYT) - Quy trình xử trí tăng kali máu cấp tính.</li>
                 <li><strong>UK Kidney Association Clinical Practice Guidelines (2020):</strong> Treatment of Acute Hyperkalaemia in Adults - Khuyến cáo tỷ lệ phân phối liều an toàn Insulin:Glucose để tránh tai biến hạ đường huyết iatrogenic.</li>
                 <li><strong>European Society of Intensive Care Medicine (ESICM):</strong> Hướng dẫn can thiệp cấp cứu thăng bằng kiềm toan và điện giải trong ICU.</li>
             </ol>
         </div>
 
-    </div>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t-4 border-teal-600 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div>
+                <p class="font-bold text-white mb-1"><i class="fa-solid fa-staff-snake text-teal-500 mr-2"></i> OncoPortal &copy; 2026</p>
+                <p class="text-xs">Công cụ hỗ trợ nội bộ. Vui lòng đối chiếu với thực tế lâm sàng.</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="#" class="hover:text-white transition">Hỗ trợ</a>
+                <a href="#" class="hover:text-white transition">Báo lỗi</a>
+                <a href="#" class="hover:text-white transition">Bảo mật</a>
+            </div>
+        </div>
+    </footer>
 
     <script>
         function calculateHyperkalemia() {
-            // Đọc dữ liệu đầu vào
             const weight = parseFloat(document.getElementById('weight').value) || 0;
             const currentK = parseFloat(document.getElementById('current_k').value) || 0;
             const ecgChanges = document.getElementById('ecg_changes').value;
@@ -275,38 +169,37 @@
             const calciumEl = document.getElementById('lbl_calcium_action');
             const renalWarningEl = document.getElementById('renal_warning');
 
-            // 1. Phân cấp độ nặng dựa trên K+ huyết thanh và ECG
-            resultBox.className = "result-box";
+            resultBox.className = "p-5 rounded-xl border mt-4";
+            badgeEl.className = "px-3 py-1 text-xs font-bold uppercase rounded-md";
+
             let isUrgent = false;
 
             if (currentK >= 6.5 || ecgChanges === 'yes') {
                 badgeEl.innerText = "Tăng K+ Nguy Kịch";
-                badgeEl.className = "badge badge-danger";
-                resultBox.classList.add('result-danger');
+                badgeEl.classList.add("bg-red-200", "text-red-700");
+                resultBox.classList.add("bg-red-50", "border-red-200", "text-red-900");
                 titleEl.innerText = "Cấp cứu tối khẩn cấp - Nguy cơ ngừng tim đột ngột!";
                 isUrgent = true;
             } else if (currentK >= 6.0 && currentK < 6.5) {
                 badgeEl.innerText = "Tăng K+ Trung Bình";
-                badgeEl.className = "badge badge-warning";
-                resultBox.classList.add('result-warning');
+                badgeEl.classList.add("bg-amber-200", "text-amber-800");
+                resultBox.classList.add("bg-amber-50", "border-amber-200", "text-amber-900");
                 titleEl.innerText = "Cần can thiệp sớm bằng phác đồ nội khoa dịch truyền dịch chuyển ion.";
-                isUrgent = (ecgChanges === 'yes'); // Nếu có thay đổi ECG thì lập tức nâng cấp thành nguy kịch
+                isUrgent = (ecgChanges === 'yes'); 
             } else {
                 badgeEl.innerText = "Tăng K+ Nhẹ";
-                badgeEl.className = "badge badge-info";
-                resultBox.classList.add('result-safe');
+                badgeEl.classList.add("bg-sky-200", "text-sky-800");
+                resultBox.classList.add("bg-sky-50", "border-sky-200", "text-sky-900");
                 titleEl.innerText = "Theo dõi sát, hạn chế nguồn kali đưa vào, có thể dùng nhựa trao đổi ion uống.";
             }
 
-            // 2. Phác đồ Canxi (Bước 1)
             if (isUrgent || ecgChanges === 'yes') {
-                calciumEl.innerHTML = "<strong>CHỈ ĐỊNH BẮT BUỘC:</strong> Tiêm tĩnh mạch chậm 10 mL Canxi Clorua 10% (hoặc Canxi Gluconat 10%) trong 2 - 3 phút. Tác dụng bảo vệ tim xuất hiện sau 1-3 phút.";
+                calciumEl.innerHTML = "<strong class='text-red-700'>CHỈ ĐỊNH BẮT BUỘC:</strong> Tiêm tĩnh mạch chậm 10 mL Canxi Clorua 10% (hoặc Canxi Gluconat 10%) trong 2 - 3 phút. Tác dụng bảo vệ tim xuất hiện sau 1-3 phút.";
             } else {
                 calciumEl.innerText = "Chưa có chỉ định canxi khẩn cấp (ECG bình thường). Tuy nhiên cần chuẩn bị sẵn sàng ở tủ trực nếu Kali tăng tiến triển.";
             }
 
-            // 3. Phác đồ Insulin - Glucose (Bước 2)
-            let gGram = 50; // Mặc định lượng gram đường trong chai 10% hoặc 20%
+            let gGram = 50; 
             let fluidName = "Glucose 20% (250 mL)";
             let infusionTimeMinutes = 30;
             let totalVolume = 250;
@@ -323,30 +216,27 @@
                 totalVolume = 500;
             }
 
-            // Nguyên tắc phân phối liều chuẩn: 1 UI Actrapid ứng với 5g Glucose để tránh hạ đường huyết
             let insulinDose = Math.round(gGram / 5);
             
-            // Nếu dùng Glucose 5% chỉ có 25g đường, lượng insulin là 5-6 UI. Nếu dùng 50g đường, lượng insulin là 10 UI.
             document.getElementById('lbl_selected_fluid').innerText = fluidName;
             document.getElementById('lbl_insulin_dose').innerText = insulinDose;
             document.getElementById('lbl_infusion_time').innerText = infusionTimeMinutes;
             
-            // Tính tốc độ máy truyền dịch (mL/h)
             let pumpSpeed = (totalVolume / infusionTimeMinutes) * 60;
             document.getElementById('lbl_pump_speed').innerText = Math.round(pumpSpeed);
 
-            // 4. Phác đồ Đào thải (Bước 3)
             const eliminationEl = document.getElementById('lbl_elimination_action');
             if (renalStatus === 'anuria') {
-                eliminationEl.innerHTML = "<span style='color:var(--danger); font-weight:bold;'>Chống chỉ định lợi tiểu do bệnh nhân vô niệu.</span> Không truyền dịch tải thể tích quá mức.";
-                renalWarningEl.style.display = 'block';
+                eliminationEl.innerHTML = "<span class='text-red-600 font-bold'>Chống chỉ định lợi tiểu do bệnh nhân vô niệu.</span> Không truyền dịch tải thể tích quá mức.";
+                renalWarningEl.classList.remove('hidden');
+                renalWarningEl.classList.add('block');
             } else {
                 eliminationEl.innerHTML = "Tiêm tĩnh mạch Furosemide 20 - 40 mg (1 - 2 ống). Có thể bổ sung truyền dịch truyền đẳng trương bù trừ nếu bệnh nhân không có tình trạng quá tải dịch, nhằm ép thận tăng bài niệu bài tiết Kali.";
-                renalWarningEl.style.display = 'none';
+                renalWarningEl.classList.add('hidden');
+                renalWarningEl.classList.remove('block');
             }
         }
 
-        // Kích hoạt tính toán tự động khi tải trang
         window.onload = function() {
             calculateHyperkalemia();
         };
