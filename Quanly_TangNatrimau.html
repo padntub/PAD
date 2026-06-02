@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng Dụng Quản Lý Liệu Pháp Dịch Truyền Tăng Natri Máu</title>
+    <style>
+        :root {
+            --primary-color: #0284c7;
+            --primary-dark: #0369a1;
+            --secondary-color: #0f172a;
+            --bg-light: #f8fafc;
+            --border-color: #cbd5e1;
+            --text-main: #334155;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --danger: #dc2626;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.1rem;
+            color: #94a3b8;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .section-card.app-box {
+            border-left-color: var(--primary-color);
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: var(--primary-dark);
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--secondary-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+        }
+
+        .result-box {
+            padding: 1.2rem;
+            border-radius: 6px;
+            margin-top: 1.5rem;
+        }
+
+        .result-safe { background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .result-warning { background-color: #fffde7; border: 1px solid #fef08a; color: #854d0e; }
+        .result-danger { background-color: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-danger { background-color: #fee2e2; color: #ef4444; }
+        .badge-warning { background-color: #fef9c3; color: #eab308; }
+        .badge-info { background-color: #e0f2fe; color: #0ea5e9; }
+
+        .alert-flash {
+            background-color: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+            padding: 0.8rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .note-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ứng Dụng Tính Toán Dịch Truyền Tăng Natri Máu</h1>
+        <p>Bù nước tự do thiếu hụt và kiểm soát tốc độ hạ sNu an toàn theo Adrogue-Madias</p>
+    </header>
+
+    <div class="container">
+
+        <div class="section-card app-box">
+            <h2>CÔNG CỤ ĐIỀU CHỈNH TĂNG NATRI MÁU</h2>
+            
+            <div class="grid-2">
+                <div>
+                    <h3>Thông số lâm sàng</h3>
+                    
+                    <div class="form-group">
+                        <label for="gender">Thể trạng & Nhóm nhân trắc học</label>
+                        <select id="gender" onchange="calculateHypernatremia()">
+                            <option value="male_adult">Nam trưởng thành (Hệ số 0.6)</option>
+                            <option value="female_adult">Nữ trưởng thành (Hệ số 0.5)</option>
+                            <option value="male_elderly">Nam cao tuổi / Suy kiệt (Hệ số 0.5)</option>
+                            <option value="female_elderly">Nữ cao tuổi / Suy kiệt (Hệ số 0.45)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weight">Cân nặng thực tế (kg)</label>
+                        <input type="number" id="weight" value="60" min="20" max="150" oninput="calculateHypernatremia()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="current_na">Nồng độ Natri (Na+) máu hiện tại (mmol/L)</label>
+                        <input type="number" id="current_na" value="160" min="146" max="190" oninput="calculateHypernatremia()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duration_type">Thời gian diễn tiến bệnh</label>
+                        <select id="duration_type" onchange="calculateHypernatremia()">
+                            <option value="chronic">Mạn tính hoặc Không rõ thời gian (&ge;48h) - Bắt buộc hạ chậm</option>
+                            <option value="acute">Cấp tính (&lt;48h) - Cho phép hạ nhanh an toàn</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fluid_type">Dịch truyền nhược trương dự kiến sử dụng</label>
+                        <select id="fluid_type" onchange="calculateHypernatremia()">
+                            <option value="d5w">Glucose 5% đường tĩnh mạch (0 mmol/L Na+)</option>
+                            <option value="half_ns">Natri Clorua 0.45% / Nửa tĩnh mạch (77 mmol/L Na+)</option>
+                            <option value="quarter_ns">Natri Clorua 0.2% (31 mmol/L Na+)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>Phân tích dịch truyền tĩnh mạch</h3>
+                    
+                    <div id="result_area" class="result-box result-danger">
+                        <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                            <span id="severity_badge" class="badge badge-danger">Tăng Na+ Trung Bình</span>
+                            <span id="analysis_title">Nguy cơ mất nước nội bào nghiêm trọng</span>
+                        </div>
+
+                        <p><strong>Tổng lượng nước cơ thể ước tính (TBW):</strong> <span id="lbl_tbw">36.0</span> Lít</p>
+                        <p><strong>Lượng nước tự do thiếu hụt (Free Water Deficit):</strong> <span id="lbl_deficit">5.14</span> Lít</p>
+                        <p><strong>Hiệu ứng của 1 Lít dịch truyền đã chọn:</strong> Làm giảm Natri máu xuống <span id="lbl_delta">4.32</span> mmol/L.</p>
+                        
+                        <div style="background: rgba(255,255,255,0.7); padding: 0.8rem; border-radius: 4px; margin-top: 1rem;">
+                            <strong>Kế hoạch thiết lập dịch truyền trong 24 giờ đầu:</strong>
+                            <ul style="margin: 0.4rem 0 0 0; padding-left: 1.2rem;">
+                                <li>Mục tiêu hạ Natri khuyến cáo tối đa: <span id="lbl_max_drop">10</span> mmol/L / 24h.</li>
+                                <li>Thể tích dịch truyền tối thiểu cần cấp: <span id="lbl_volume_24h">2315</span> mL.</li>
+                                <li>Tốc độ truyền gợi ý: <strong><span id="lbl_pump_rate">96</span> mL/giờ</strong>.</li>
+                            </ul>
+                        </div>
+
+                        <div id="safety_alert" class="alert-flash" style="display: none;">
+                            ⚠️ LƯU Ý: Tốc độ hạ quá nhanh ở bệnh nhân tăng Natri máu mạn tính có thể gây phù não, co giật diện rộng. Kiểm tra lại sNa mỗi 4 giờ!
+                        </div>
+                    </div>
+
+                    <p class="note-text">
+                        <strong>Khuyến cáo thực hành giường bệnh:</strong><br>
+                        - Ưu tiên bù nước tự do qua đường uống hoặc qua sonde dạ dày bằng nước chín nếu bệnh nhân tỉnh táo và hệ tiêu hóa hoạt động tốt (đây là đường bù an toàn nhất).<br>
+                        - Tốc độ truyền trên chưa bao gồm lượng nước tiểu thực tế hoặc các nguồn mất dịch tiếp diễn (tiêu chảy, sốt cao). Bác sĩ cần đánh giá lại bilan dịch xuất nhập mỗi ca trực.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>PHẦN III: TÀI LIỆU THAM KHẢO Y HỌC CHỨNG CỨ (EVIDENCE-BASED)</h2>
+            <ol>
+                <li><strong>Bộ Y tế Việt Nam (2014):</strong> Quyết định số 1904/QĐ-BYT ban hành tài liệu "Hướng dẫn quy trình kỹ thuật chuyên ngành Hồi sức - Cấp cứu và chống độc".</li>
+                <li><strong>Adrogue HJ, Madias NE (2000):</strong> "Hypernatremia" — <em>The New England Journal of Medicine (NEJM)</em>. Ứng dụng công thức động học thăng bằng nước tự do và nồng độ điện giải dung dịch bổ sung.</li>
+                <li><strong>American Academy of Family Physicians (AAFP):</strong> Hướng dẫn tiếp cận an toàn, khống chế trần hạ điện giải tránh phù não thứ phát đối với rối loạn áp lực thẩm thấu huyết thanh.</li>
+            </ol>
+        </div>
+
+    </div>
+
+    <script>
+        function calculateHypernatremia() {
+            const gender = document.getElementById('gender').value;
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const currentNa = parseFloat(document.getElementById('current_na').value) || 0;
+            const durationType = document.getElementById('duration_type').value;
+            const fluidType = document.getElementById('fluid_type').value;
+
+            if (weight <= 0 || currentNa <= 145) return;
+
+            // 1. Tính TBW theo nhóm nhân trắc học
+            let factor = 0.6;
+            if (gender === 'male_adult') factor = 0.6;
+            else if (gender === 'female_adult') factor = 0.5;
+            else if (gender === 'male_elderly') factor = 0.5;
+            else if (gender === 'female_elderly') factor = 0.45;
+
+            const tbw = weight * factor;
+            document.getElementById('lbl_tbw').innerText = tbw.toFixed(1);
+
+            // 2. Tính lượng nước tự do thiếu hụt (Free Water Deficit)
+            const waterDeficit = tbw * ((currentNa / 140) - 1);
+            document.getElementById('lbl_deficit').innerText = waterDeficit.toFixed(2);
+
+            // 3. Định vị Na+ trong dịch truyền nhược trương lựa chọn
+            let infusateNa = 0; // d5w
+            if (fluidType === 'half_ns') infusateNa = 77;
+            else if (fluidType === 'quarter_ns') infusateNa = 31;
+
+            // 4. Công thức Adrogue-Madias cho tăng Natri máu: Delta Na = (Na dịch truyền - sNa hiện tại) / (TBW + 1)
+            // Kết quả trả về số âm thể hiện lượng Natri sẽ giảm đi sau khi truyền 1 lít dịch.
+            const deltaNa = (infusateNa - currentNa) / (tbw + 1);
+            const absoluteDelta = Math.abs(deltaNa);
+            document.getElementById('lbl_delta').innerText = absoluteDelta.toFixed(2);
+
+            // 5. Xác định mục tiêu hạ an toàn trong 24 giờ đầu
+            let max24hDrop = 10; // Giới hạn an toàn chuẩn mạn tính
+            const alertEl = document.getElementById('safety_alert');
+            
+            if (durationType === 'acute') {
+                max24hDrop = 12; // Cấp tính cho phép biên độ rộng hơn một chút nếu diễn tiến nhanh
+                alertEl.style.display = 'none';
+            } else {
+                max24hDrop = 10;
+                alertEl.style.display = 'block'; // Nhắc nhở an toàn mạn tính
+            }
+            document.getElementById('lbl_max_drop').innerText = max24hDrop;
+
+            // 6. Phân mức độ tăng Natri để đổi Badge chỉ thị trực quan
+            const badgeEl = document.getElementById('severity_badge');
+            const resultBox = document.getElementById('result_area');
+            const titleEl = document.getElementById('analysis_title');
+
+            resultBox.className = "result-box";
+            if (currentNa >= 170) {
+                badgeEl.innerText = "Tăng Na+ Nguy Kịch";
+                badgeEl.className = "badge badge-danger";
+                resultBox.classList.add('result-danger');
+                titleEl.innerText = "Đe dọa tính mạng - Rối loạn tri giác, hôn mê cấp tính!";
+            } else if (currentNa >= 150 && currentNa < 170) {
+                badgeEl.innerText = "Tăng Na+ Trung Bình";
+                badgeEl.className = "badge badge-warning";
+                resultBox.classList.add('result-warning');
+                titleEl.innerText = "Cần bù dịch nhược trương kiểm soát chặt tốc độ từng giờ.";
+            } else {
+                badgeEl.innerText = "Tăng Na+ Nhẹ";
+                badgeEl.className = "badge badge-info";
+                resultBox.classList.add('result-safe');
+                titleEl.innerText = "Ưu tiên bù nước tự do qua đường tiêu hóa (đường uống).";
+            }
+
+            // 7. Tính thể tích dịch cần bù trong 24 giờ và tốc độ bơm điện (mL/h)
+            if (absoluteDelta > 0) {
+                let requiredVolumeLitres = max24hDrop / absoluteDelta;
+                let requiredVolumeMl = requiredVolumeLitres * 1000;
+                let pumpRate = requiredVolumeMl / 24;
+
+                document.getElementById('lbl_volume_24h').innerText = Math.round(requiredVolumeMl);
+                document.getElementById('lbl_pump_rate').innerText = Math.round(pumpRate);
+            }
+        }
+
+        window.onload = function() {
+            calculateHypernatremia();
+        };
+    </script>
+</body>
+</html>
