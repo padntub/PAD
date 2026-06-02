@@ -158,7 +158,7 @@
                             <ul class="list-disc pl-5 space-y-1 text-slate-700">
                                 <li>Tốc độ tăng tối đa: <span id="lbl_max_rate" class="font-bold">8 mmol/L trong 24 giờ đầu</span>.</li>
                                 <li>Thể tích dịch truyền tối đa cần thiết trong 24h: <span id="lbl_volume_24h" class="font-bold text-base text-sky-600">826</span> mL.</li>
-                                <li>Tốc độ truyền tĩnh mạch gợi ý: <span id="lbl_pump_rate" class="font-bold text-base text-rose-600">34</span> mL/giờ.</li>
+                                <li>Tốc độ truyền tĩnh mạch gợi ý: <span id="lbl_pump_rate" class="font-bold text-base text-rose-600">34</span> mL/giờ <span class="text-slate-500 font-normal">(≈ <span id="lbl_drop_rate" class="font-bold text-base text-rose-600">11</span> giọt/phút)</span>.</li>
                             </ul>
                         </div>
 
@@ -281,12 +281,15 @@
                 let requiredVolume = max24hChange / deltaNa;
                 let requiredVolumeMl = requiredVolume * 1000;
                 let pumpRate = requiredVolumeMl / 24;
+                let dropRate = (pumpRate * 20) / 60; // 20 drops/mL standard IV set
 
                 document.getElementById('lbl_volume_24h').innerText = Math.round(requiredVolumeMl);
                 document.getElementById('lbl_pump_rate').innerText = Math.round(pumpRate);
+                document.getElementById('lbl_drop_rate').innerText = Math.round(dropRate);
             } else {
                 document.getElementById('lbl_volume_24h').innerText = "0 (Dịch có Na+ thấp hơn Na+ máu)";
                 document.getElementById('lbl_pump_rate').innerText = "0";
+                document.getElementById('lbl_drop_rate').innerText = "0";
             }
         }
 
