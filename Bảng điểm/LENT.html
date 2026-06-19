@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thang điểm LENT - Dịch màng phổi ác tính</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; }
+        .checkbox-card { transition: all 0.2s ease-in-out; }
+        .checkbox-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        input[type="checkbox"]:checked + div {
+            border-color: #9333ea; background-color: #f3e8ff;
+        }
+        input[type="checkbox"]:checked + div .check-icon {
+            opacity: 1; transform: scale(1);
+        }
+        .check-icon { opacity: 0; transform: scale(0.5); transition: all 0.2s; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background-color: #94a3b8; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex flex-col">
+
+    <header class="bg-purple-900 text-white p-4 shadow-md flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="bg-purple-700 p-2 rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight">LENT PROGNOSTIC SCORE</h1>
+                <p class="text-purple-200 text-xs font-medium">Hệ thống tiên lượng thời gian sống thêm ở bệnh nhân dịch màng phổi ác tính (MPE)</p>
+            </div>
+        </div>
+        <a href="../index.html" class="flex items-center gap-2 bg-purple-800 hover:bg-purple-700 text-white px-3 py-2 rounded-lg transition text-sm font-medium border border-purple-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span class="hidden sm:inline">Trang chủ</span>
+        </a>
+    </header>
+
+    <main class="flex-1 overflow-hidden flex flex-col">
+        <div class="flex-1 overflow-y-auto p-4 md:p-6">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <div class="lg:col-span-8 space-y-6" id="lent-form">
+                    
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-purple-800 font-bold mb-4 flex items-center gap-2 border-b pb-3 text-base uppercase">
+                            L - LDH trong dịch màng phổi (Lactate Dehydrogenase)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item l-group" value="0"><div class="border border-slate-200 p-3 rounded-xl flex items-center gap-3"><div class="border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">&lt; 1500 IU/L <span class="text-xs text-slate-400 ml-1">(0đ)</span></span></div></label>
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item l-group" value="1"><div class="border border-slate-200 p-3 rounded-xl flex items-center gap-3"><div class="border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">≥ 1500 IU/L <span class="text-xs text-purple-600 font-bold ml-1">(+1đ)</span></span></div></label>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-purple-800 font-bold mb-4 flex items-center gap-2 border-b pb-3 text-base uppercase">
+                            E - ECOG Performance Status (Toàn trạng bệnh nhân)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item e-group" value="0"><div class="border border-slate-200 p-3 rounded-xl flex items-start gap-3 h-full"><div class="mt-0.5 border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">ECOG 0 <span class="text-xs text-slate-400 block font-normal">Hoàn toàn không triệu chứng (0đ)</span></span></div></label>
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item e-group" value="1"><div class="border border-slate-200 p-3 rounded-xl flex items-start gap-3 h-full"><div class="mt-0.5 border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">ECOG 1 <span class="text-xs text-purple-600 block font-bold">Có triệu chứng nhẹ, vẫn đi lại làm việc được (+1đ)</span></span></div></label>
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item e-group" value="2"><div class="border border-slate-200 p-3 rounded-xl flex items-start gap-3 h-full"><div class="mt-0.5 border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">ECOG 2 <span class="text-xs text-purple-600 block font-bold">Có triệu chứng, nằm giường < 50% thời gian ngày (+2đ)</span></span></div></label>
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item e-group" value="3"><div class="border border-slate-200 p-3 rounded-xl flex items-start gap-3 h-full"><div class="mt-0.5 border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">ECOG 3 - 4 <span class="text-xs text-rose-600 block font-bold">Nằm giường > 50% ngày hoặc mất khả năng vận động (+3đ)</span></span></div></label>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-purple-800 font-bold mb-4 flex items-center gap-2 border-b pb-3 text-base uppercase">
+                            N - Neutrophil-to-Lymphocyte Ratio (Tỷ lệ bạch cầu trung tính/lympho trong máu)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item n-group" value="0"><div class="border border-slate-200 p-3 rounded-xl flex items-center gap-3"><div class="border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">NLR &lt; 9 <span class="text-xs text-slate-400 ml-1">(0đ)</span></span></div></label>
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item n-group" value="1"><div class="border border-slate-200 p-3 rounded-xl flex items-center gap-3"><div class="border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">NLR ≥ 9 <span class="text-xs text-purple-600 font-bold ml-1">(+1đ)</span></span></div></label>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-purple-800 font-bold mb-4 flex items-center gap-2 border-b pb-3 text-base uppercase">
+                            T - Tumor Type (Loại ung thư nguyên phát)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item t-group" value="0"><div class="border border-slate-200 p-3 rounded-xl flex items-start gap-3 h-full"><div class="mt-0.5 border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">Nguy cơ Thấp (0đ)<span class="text-xs text-slate-400 block font-normal mt-1">U trung biểu mô (Mesothelioma), U ác tính hệ tạo máu</span></span></div></label>
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item t-group" value="1"><div class="border border-slate-200 p-3 rounded-xl flex items-start gap-3 h-full"><div class="mt-0.5 border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">Nguy cơ Vừa (+1đ)<span class="text-xs text-purple-600 block font-bold mt-1">Ung thư vú, Ung thư phụ khoa, Ung thư tế bào thận (RCC)</span></span></div></label>
+                            <label class="cursor-pointer checkbox-card"><input type="checkbox" class="hidden lent-item t-group" value="2"><div class="border border-slate-200 p-3 rounded-xl flex items-start gap-3 h-full"><div class="mt-0.5 border-2 border-slate-300 w-5 h-5 rounded flex items-center justify-center bg-white shrink-0"><svg class="w-3 h-3 text-purple-600 check-icon" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg></div><span class="text-sm font-medium text-slate-700">Nguy cơ Cao (+2đ)<span class="text-xs text-rose-600 block font-bold mt-1">Ung thư phổi, Các loại u đặc nguyên phát khác</span></span></div></label>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 text-xs text-slate-500 space-y-2">
+                        <p class="font-bold text-slate-700 uppercase tracking-wider"><i class="fa-solid fa-chart-line text-purple-500 mr-1"></i> Giá trị dự đoán vượt trội (LENT Score vs ECOG đơn thuần):</p>
+                        <div class="grid grid-cols-3 gap-2 border-t pt-2 text-center font-medium">
+                            <div>Mốc thời gian</div><div>Diện tích dưới đường cong (AUC) LENT</div><div>AUC ECOG riêng lẻ</div>
+                            <div class="text-slate-400">Dự đoán 1 tháng</div><div class="text-purple-700 font-bold">0.77 (p&lt;0.01)</div><div class="text-slate-400">0.66</div>
+                            <div class="text-slate-400">Dự đoán 3 tháng</div><div class="text-purple-700 font-bold">0.84 (p&lt;0.01)</div><div class="text-slate-400">0.75</div>
+                            <div class="text-slate-400">Dự đoán 6 tháng</div><div class="text-purple-700 font-bold">0.85 (p&lt;0.01)</div><div class="text-slate-400">0.76</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="lg:col-span-4">
+                    <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-2xl sticky top-4 border-t-4 border-purple-500 overflow-hidden">
+                        
+                        <div class="flex items-end justify-between mb-6 border-b border-slate-800 pb-5">
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">TỔNG ĐIỂM LENT</p>
+                                <div class="flex items-baseline gap-2">
+                                    <span id="res-score" class="text-6xl font-black text-white leading-none">0</span>
+                                    <span class="text-lg text-slate-400 font-bold">/ 7</span>
+                                </div>
+                            </div>
+                            <div id="res-group-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-700 text-slate-300">
+                                Thiếu dữ liệu
+                            </div>
+                        </div>
+
+                        <div class="mb-5 space-y-2.5">
+                            <p class="text-xs font-bold text-purple-400 uppercase tracking-wide">Tiên lượng sống còn chi tiết:</p>
+                            <div class="bg-slate-800/60 border border-slate-700/60 p-3 rounded-xl flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Trung vị sống thêm (Median):</span>
+                                <span id="survival-median" class="font-bold text-white">--</span>
+                            </div>
+                            <div class="bg-slate-800/60 border border-slate-700/60 p-3 rounded-xl flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Tỷ lệ sống sau 1 tháng:</span>
+                                <span id="survival-1m" class="font-bold text-white">--</span>
+                            </div>
+                            <div class="bg-slate-800/60 border border-slate-700/60 p-3 rounded-xl flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Tỷ lệ sống sau 3 tháng:</span>
+                                <span id="survival-3m" class="font-bold text-white">--</span>
+                            </div>
+                            <div class="bg-slate-800/60 border border-slate-700/60 p-3 rounded-xl flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Tỷ lệ sống sau 6 tháng:</span>
+                                <span id="survival-6m" class="font-bold text-white">--</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <p class="text-xs font-bold text-purple-400 uppercase mb-2">QUẢN LÝ LÂM SÀNG KHUYẾN NGHỊ:</p>
+                            <div id="res-management" class="text-xs text-slate-300 space-y-2 bg-slate-800 p-4 rounded-xl border border-slate-700 leading-relaxed min-h-[60px]">
+                                Vui lòng điền đủ thông tin các nhóm thông số để nhận phác đồ quản lý khuyến nghị.
+                            </div>
+                        </div>
+
+                        <div class="mb-6 text-[10px] text-slate-500 leading-normal bg-black/20 p-3 rounded-xl border border-slate-800">
+                            <span class="text-amber-500/80 font-bold">Hạn chế:</span> Không áp dụng cho paramalignant effusion (dịch màng phổi nghi ngờ nhưng chưa có bằng chứng tế bào học/mô bệnh học ác tính). Không tính đến giai đoạn tiến triển di căn xa khác hoặc đột biến gen nhạy thuốc.
+                        </div>
+
+                        <div>
+                            <button onclick="resetTool()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl text-xs font-bold transition border border-slate-700">
+                                LÀM MỚI (RESET FORM)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Cấu hình loại trừ lẫn nhau (Mutually Exclusive) cho các nhóm tiêu chí
+        setupExclusiveGroup('.l-group');
+        setupExclusiveGroup('.e-group');
+        setupExclusiveGroup('.n-group');
+        setupExclusiveGroup('.t-group');
+
+        function setupExclusiveGroup(selector) {
+            const checkboxes = document.querySelectorAll(selector);
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        checkboxes.forEach(cb => {
+                            if (cb !== this) cb.checked = false;
+                        });
+                    }
+                    calculateLENT();
+                });
+            });
+        }
+
+        function calculateLENT() {
+            let totalScore = 0;
+            let selectedCount = 0;
+
+            const groups = ['.l-group', '.e-group', '.n-group', '.t-group'];
+            groups.forEach(groupClass => {
+                const checkedItem = document.querySelector(`${groupClass}:checked`);
+                if (checkedItem) {
+                    totalScore += parseInt(checkedItem.value);
+                    selectedCount++;
+                }
+            });
+
+            // Trường hợp điền chưa đủ thông tin cấu thành
+            if (selectedCount < 4) {
+                document.getElementById('res-score').innerText = totalScore;
+                document.getElementById('res-group-badge').className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-700 text-slate-300";
+                document.getElementById('res-group-badge').innerText = "Thiếu chỉ số";
+                document.getElementById('survival-median').innerText = "--";
+                document.getElementById('survival-1m').innerText = "--";
+                document.getElementById('survival-3m').innerText = "--";
+                document.getElementById('survival-6m').innerText = "--";
+                document.getElementById('res-management').innerHTML = "Vui lòng điền đủ thông tin các nhóm thông số để nhận phác đồ quản lý khuyến nghị.";
+                return;
+            }
+
+            // Cập nhật tổng điểm số
+            document.getElementById('res-score').innerText = totalScore;
+
+            let groupName = "";
+            let groupClass = "";
+            let medianTime = "";
+            let s1m = "", s3m = "", s6m = "";
+            let managementText = "";
+
+            // Phân loại dải điểm nguy cơ theo tiêu chuẩn LENT gốc
+            if (totalScore >= 0 && totalScore <= 1) {
+                groupName = "Nguy cơ Thấp (Low risk)";
+                groupClass = "bg-emerald-900/60 text-emerald-300 border border-emerald-700";
+                medianTime = "319 ngày (Dải: 228-549)";
+                s1m = "100%"; s3m = "98%"; s6m = "86%";
+                managementText = "✅ <strong>Tiên lượng sống trung bình dài (~10.5 tháng).</strong><br>📌 <strong>Khuyến nghị:</strong> Có thể ưu tiên lựa chọn và cân nhắc phương pháp gây dính màng phổi <strong>Pleurodesis (bằng bột Talc)</strong> nhằm triệt tiêu khoang ảo hiệu quả.";
+            } else if (totalScore >= 2 && totalScore <= 4) {
+                groupName = "Nguy cơ Vừa (Moderate risk)";
+                groupClass = "bg-orange-900/60 text-orange-300 border border-orange-700";
+                medianTime = "130 ngày (Dải: 47-467)";
+                s1m = "81%"; s3m = "59%"; s6m = "47%";
+                managementText = "✅ <strong>Tiên lượng sống trung bình (~4.3 tháng).</strong><br>📌 <strong>Khuyến nghị:</strong> Cần đánh giá kỹ lưỡng và cá thể hóa lựa chọn giữa gây dính màng phổi (Pleurodesis) và <strong>đặt ống thông màng phổi lưu trú dài ngày (Indwelling Pleural Catheter - IPC)</strong> dựa trên mức độ giãn nở của phổi.";
+            } else if (totalScore >= 5 && totalScore <= 7) {
+                groupName = "Nguy cơ Cao (High risk)";
+                groupClass = "bg-rose-900/60 text-rose-300 border border-rose-700";
+                medianTime = "44 ngày (Dải: 22-77)";
+                s1m = "65%"; s3m = "13%"; s6m = "3%";
+                managementText = "⚠️ <strong>Tiên lượng tử vong sớm cao, sống trung bình ngắn (~1.5 tháng).</strong><br>📌 <strong>Khuyến nghị:</strong> Ưu tiên đặt <strong>ống thông màng phổi lưu trú (IPC)</strong> hoặc chọc hút dịch giải cảm lặp lại tại nhà/ngoại trú. <br>❌ <strong>Hạn chế:</strong> Tránh chỉ định Pleurodesis (vì thời gian nằm viện hậu phẫu mất 4-6 ngày, chiếm tỉ trọng lớn trong toàn bộ quỹ thời gian sống còn lại của bệnh nhân).";
+            }
+
+            // Đồng bộ kết quả ra giao diện
+            const badge = document.getElementById('res-group-badge');
+            badge.className = `px-3 py-1 rounded-full text-xs font-bold ${groupClass}`;
+            badge.innerText = groupName;
+
+            document.getElementById('survival-median').innerText = medianTime;
+            document.getElementById('survival-1m').innerText = s1m;
+            document.getElementById('survival-3m').innerText = s3m;
+            document.getElementById('survival-6m').innerText = s6m;
+            document.getElementById('res-management').innerHTML = managementText;
+        }
+
+        function resetTool() {
+            document.querySelectorAll('.lent-item').forEach(item => item.checked = false);
+            calculateLENT();
+        }
+
+        // Khởi động tính toán ban đầu
+        window.onload = calculateLENT;
+    </script>
+</body>
+</html>
