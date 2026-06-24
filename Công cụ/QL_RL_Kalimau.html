@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Rối Loạn Kali Máu - OncoPortal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; }
+        .hero-gradient {
+            background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%);
+        }
+        .tab-active {
+            border-bottom-width: 4px;
+            font-weight: 800;
+        }
+        .tab-hypo-active {
+            border-color: #0d9488;
+            color: #0d9488;
+        }
+        .tab-hyper-active {
+            border-color: #e11d48;
+            color: #e11d48;
+        }
+        .tab-info-active {
+            border-color: #475569;
+            color: #475569;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: #334155;
+            font-size: 0.875rem;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background-color: #ffffff;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='../index.html'">
+                <div class="bg-teal-600 text-white p-2 rounded-lg shadow-sm">
+                    <i class="fa-solid fa-staff-snake text-xl"></i>
+                </div>
+                <span class="font-black text-xl text-teal-800 tracking-tight">Onco<span class="text-sky-500">Portal</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="../index.html" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Trang chủ</a>
+                <a href="#" class="text-teal-600 font-bold border-b-2 border-teal-600 px-1 py-2">Công cụ</a>
+                <a href="#" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Phác đồ</a>
+                <a href="#" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Nghiên cứu</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-8 px-4 shadow-inner">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-3xl md:text-4xl font-black mb-2 drop-shadow-md">Quản Lý Rối Loạn Kali Máu</h1>
+            <p class="text-base text-teal-50 max-w-3xl mx-auto font-medium opacity-90">
+                Hỗ trợ bác sĩ chẩn đoán nguyên nhân, tính toán dịch truyền và phác đồ xử trí cấp cứu Tăng/Hạ Kali máu tại giường bệnh.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <div class="bg-white border-b border-slate-200 sticky top-16 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-center space-x-2 md:space-x-8">
+                <button id="tab-hypo-btn" onclick="switchTab('hypo')" class="py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 border-transparent text-slate-500 hover:text-teal-600 transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-trend-down text-teal-500"></i> Hạ Kali Máu (&lt; 3.5)
+                </button>
+                <button id="tab-hyper-btn" onclick="switchTab('hyper')" class="py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 border-transparent text-slate-500 hover:text-rose-600 transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-trend-up text-rose-500"></i> Tăng Kali Máu (&gt; 5.0)
+                </button>
+                <button id="tab-info-btn" onclick="switchTab('info')" class="py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 border-transparent text-slate-500 hover:text-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-book-medical text-slate-500"></i> Cẩm nang &amp; Cơ chế y học
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- ==================== TAB 1: HẠ KALI MÁU ==================== -->
+        <div id="tab-hypo" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Cột trái: Nhập thông số lâm sàng -->
+                <div class="lg:col-span-5 space-y-5 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-extrabold text-teal-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question text-teal-600"></i> 1. Thông số lâm sàng &amp; Bù dịch
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="hypo-weight">Cân nặng (kg)</label>
+                            <input type="number" id="hypo-weight" value="60" min="20" max="150" oninput="calculateHypo()">
+                        </div>
+                        <div class="form-group">
+                            <label for="hypo-k">K+ hiện tại (mmol/L)</label>
+                            <input type="number" id="hypo-k" value="2.4" step="0.1" min="1.0" max="3.4" oninput="calculateHypo()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hypo-symptoms">Triệu chứng lâm sàng nặng</label>
+                        <select id="hypo-symptoms" onchange="calculateHypo()">
+                            <option value="no">Không có triệu chứng nặng</option>
+                            <option value="yes">Có (Liệt cơ, loạn nhịp tim, liệt cơ hô hấp)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hypo-mg">Nồng độ Magne (Mg2+) máu</label>
+                        <select id="hypo-mg" onchange="calculateHypo()">
+                            <option value="normal">Bình thường hoặc ≥ 2.0 mg/dL (≥ 0.8 mmol/L)</option>
+                            <option value="low">Giảm &lt; 2.0 mg/dL (&lt; 0.8 mmol/L)</option>
+                            <option value="unknown">Chưa xét nghiệm / Không rõ</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hypo-line">Đường truyền tĩnh mạch dự kiến</label>
+                        <select id="hypo-line" onchange="calculateHypo()">
+                            <option value="peripheral">Tĩnh mạch ngoại vi (Nồng độ tối đa 40 mmol/L)</option>
+                            <option value="central">Tĩnh mạch trung tâm (Nồng độ tối đa 80 mmol/L)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="hypo-product">Chế phẩm KCl có sẵn</label>
+                            <select id="hypo-product" onchange="calculateHypo()">
+                                <option value="kcl10">KCl 10% ống 10ml (13.4 mmol)</option>
+                                <option value="kcl112">KCl 11.2% ống 10ml (15 mmol)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="hypo-diluent">Dịch pha kèm</label>
+                            <select id="hypo-diluent" onchange="toggleCustomDiluent()">
+                                <option value="500">Chai dịch 500 mL (NaCl 0.9%)</option>
+                                <option value="250">Chai dịch 250 mL (NaCl 0.9%)</option>
+                                <option value="100">Bơm tiêm điện 100 mL (NaCl 0.9%)</option>
+                                <option value="custom">Nhập thể tích khác (mL)...</option>
+                            </select>
+                            <span class="text-[10px] text-slate-500 italic mt-1 block">Lưu ý: Nếu không có sẵn NaCl 0.9%, có thể sử dụng Ringer Lactate có cùng thể tích. (Tránh dùng Glucose 5% vì làm giảm Kali máu).</span>
+                        </div>
+                    </div>
+
+                    <div id="hypo-custom-diluent-box" class="form-group hidden">
+                        <label for="hypo-custom-diluent">Thể tích dịch pha tùy chọn (mL)</label>
+                        <input type="number" id="hypo-custom-diluent" value="1000" min="50" max="2000" oninput="calculateHypo()">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="hypo-actual-tubes" class="flex justify-between items-center">
+                                <span>Số ống KCl pha thực tế</span>
+                            </label>
+                            <input type="number" id="hypo-actual-tubes" value="1.5" step="0.1" min="0.1" max="10" oninput="onTubesInput()">
+                        </div>
+                        <div class="form-group flex flex-col justify-end pb-1.5">
+                            <span class="text-[11px] text-slate-500 font-semibold leading-tight">Mức an toàn tối đa cho phép:</span>
+                            <div class="flex items-center justify-between mt-0.5">
+                                <span class="text-sm font-extrabold text-teal-700"><span id="hypo-safe-max-tubes">1.5</span> ống</span>
+                                <button onclick="resetTubes()" class="text-xs text-teal-600 underline font-normal focus:outline-none hover:text-teal-800 transition">Reset max</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Định hướng nguyên nhân hạ Kali -->
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-stethoscope text-teal-600"></i> Định hướng nguyên nhân gây hạ Kali
+                        </h3>
+                        <p class="text-xs text-slate-500 mb-3">Tích chọn các đặc điểm lâm sàng thực tế của bệnh nhân:</p>
+                        
+                        <div class="space-y-2">
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hypo-cause-diuretic" onchange="suggestHypoCauses()" class="mt-0.5 rounded text-teal-600 focus:ring-teal-500">
+                                <span>Đang dùng thuốc lợi tiểu quai (Furosemide) hoặc Thiazide</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hypo-cause-gi" onchange="suggestHypoCauses()" class="mt-0.5 rounded text-teal-600 focus:ring-teal-500">
+                                <span>Mất nước qua tiêu hóa (Nôn ói nhiều, tiêu chảy cấp/mạn, dẫn lưu sonde dạ dày)</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hypo-cause-shift" onchange="suggestHypoCauses()" class="mt-0.5 rounded text-teal-600 focus:ring-teal-500">
+                                <span>Đang dùng Insulin, thuốc cường Beta-2 Adrenergic (Salbutamol khí dung) hoặc kiềm máu</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hypo-cause-rta" onchange="suggestHypoCauses()" class="mt-0.5 rounded text-teal-600 focus:ring-teal-500">
+                                <span>Nghi ngờ toan ống thận (RTA) hoặc toan hóa máu đi kèm</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải: Kết quả xử trí và định hướng nguyên nhân -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Khuyến cáo xử trí -->
+                    <div id="hypo-result-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                            <h2 class="text-lg font-extrabold text-teal-800 flex items-center gap-2">
+                                <i class="fa-solid fa-notes-medical text-teal-600"></i> 2. Phác đồ xử trí &amp; Lệnh truyền dịch
+                            </h2>
+                            <span id="hypo-severity" class="px-2.5 py-1 text-xs font-black rounded-lg uppercase">Hạ K+ Nặng</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Đánh giá mức độ & Deficit -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-teal-50/50 border border-teal-100 p-3.5 rounded-xl">
+                                    <span class="text-xs text-slate-500 font-semibold block">Lượng Kali thiếu hụt ước lượng:</span>
+                                    <span class="text-xl font-extrabold text-teal-700"><span id="hypo-deficit-val">120</span> mmol</span>
+                                    <span class="text-xs text-slate-400 block mt-0.5">(Theo tổng lượng thiếu hụt cơ thể)</span>
+                                </div>
+                                <div class="bg-sky-50/50 border border-sky-100 p-3.5 rounded-xl">
+                                    <span class="text-xs text-slate-500 font-semibold block">Nguyên tắc tăng nồng độ:</span>
+                                    <span class="text-sm font-bold text-slate-700">Mỗi 10 mmol K+ bù vào tăng khoảng <span class="text-sky-600 font-black">0.1 mmol/L</span> K+ máu</span>
+                                </div>
+                            </div>
+
+                            <!-- Chi tiết pha dịch truyền -->
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                                <h3 class="font-extrabold text-sm text-slate-700 flex items-center gap-1">
+                                    <i class="fa-solid fa-flask text-teal-600"></i> Cách pha &amp; Tốc độ truyền dịch an toàn (Cho 1 chai dịch đã thiết lập):
+                                </h3>
+                                <ul class="space-y-2 text-xs md:text-sm text-slate-600 list-disc pl-5">
+                                    <li>Chế phẩm pha: <span id="hypo-recipe-tubes" class="font-bold text-slate-800">1.5 ống</span> KCl <span id="hypo-recipe-product" class="font-bold">10%</span> (tương đương <span id="hypo-recipe-ml" class="font-bold text-slate-800">15 mL</span> dịch đậm đặc).</li>
+                                    <li>Pha vào chai dung môi: <span id="hypo-recipe-diluent" class="font-bold text-slate-800">NaCl 0.9% 500 mL</span>.</li>
+                                    <li>Nồng độ dung dịch sau pha: <span id="hypo-recipe-conc" class="font-bold text-slate-800">40.2 mmol/L</span> <span id="hypo-conc-badge" class="px-2 py-0.5 text-[10px] font-bold rounded-full ml-1">An toàn</span></li>
+                                    <li class="bg-teal-50 border-l-2 border-teal-500 p-2 rounded-r-md">
+                                        <strong>Tốc độ truyền tĩnh mạch tối đa:</strong> <span id="hypo-recipe-rate" class="font-extrabold text-rose-600">249 mL/giờ</span> <span class="text-slate-500 font-semibold">(≈ <span id="hypo-recipe-drops" class="font-extrabold text-rose-600">83</span> giọt/phút)</span>.
+                                    </li>
+                                    <li>Tốc độ cung cấp Kali tối đa tương ứng: <span id="hypo-recipe-krate" class="font-bold text-sky-600">10 mmol/giờ</span>.</li>
+                                </ul>
+                            </div>
+
+                            <!-- Cảnh báo nguy cơ nồng độ và Magne -->
+                            <div id="hypo-alert-conc" class="bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-lg text-xs font-bold hidden flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-600 text-lg shrink-0"></i>
+                                <span>CẢNH BÁO: Nồng độ sau pha vượt ngưỡng an toàn cho đường truyền ngoại vi (40 mmol/L). Vui lòng đổi sang đường truyền trung tâm, giảm lượng KCl pha hoặc tăng thể tích chai dịch dung môi.</span>
+                            </div>
+
+                            <div id="hypo-alert-mg" class="bg-amber-50 border border-amber-200 text-amber-900 p-3.5 rounded-lg text-xs space-y-1">
+                                <div class="font-bold flex items-center gap-1.5 text-amber-800">
+                                    <i class="fa-solid fa-circle-exclamation text-base"></i> BẮT BUỘC BÙ MAGNE TRƯỚC / SONG SONG
+                                </div>
+                                <div id="hypo-alert-mg-text" class="text-slate-700">
+                                    Hạ Magne máu đi kèm sẽ làm mở kênh ROMK gây bài xuất Kali liên tục ở thận. Nếu không bù đủ Magne, việc bù Kali sẽ bị kháng trị. Bù ngay: <strong>Magnesium Sulfate 1-2g tiêm/truyền tĩnh mạch</strong>.
+                                </div>
+                            </div>
+
+                            <!-- Lưu ý an toàn lâm sàng -->
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs text-blue-800 space-y-1">
+                                <strong class="block text-blue-900"><i class="fa-solid fa-circle-info mr-1"></i> Lưu ý lâm sàng an toàn:</strong>
+                                <p>• <strong>Chống chỉ định pha Kali vào Glucose</strong> vì glucose kích thích tiết Insulin đẩy K+ vào nội bào, làm trầm trọng hơn tình trạng hạ Kali máu cấp tính.</p>
+                                <p>• Luôn kiểm tra chức năng thận (nước tiểu, Creatinine) trước khi bù Kali liều cao.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gợi ý nguyên nhân & xét nghiệm đề xuất -->
+                    <div id="hypo-cause-result-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-lg font-extrabold text-slate-800 border-b border-slate-100 pb-4 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass-chart text-sky-500"></i> Định hướng nguyên nhân &amp; Đề xuất xét nghiệm
+                        </h2>
+                        
+                        <div id="hypo-cause-output" class="text-xs md:text-sm text-slate-700 space-y-4">
+                            <!-- Sẽ được điền bằng JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==================== TAB 2: TĂNG KALI MÁU ==================== -->
+        <div id="tab-hyper" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Cột trái: Nhập thông số lâm sàng -->
+                <div class="lg:col-span-5 space-y-5 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-extrabold text-rose-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question text-rose-600"></i> 1. Thông số lâm sàng
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="hyper-weight">Cân nặng (kg)</label>
+                            <input type="number" id="hyper-weight" value="60" min="20" max="150" oninput="calculateHyper()">
+                        </div>
+                        <div class="form-group">
+                            <label for="hyper-k">K+ hiện tại (mmol/L)</label>
+                            <input type="number" id="hyper-k" value="6.7" step="0.1" min="3.5" max="10.0" oninput="calculateHyper()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hyper-ecg">Biến đổi trên Điện tâm đồ (ECG)</label>
+                        <select id="hyper-ecg" onchange="calculateHyper()">
+                            <option value="yes">Có (Sóng T cao nhọn, PR dài, QRS giãn rộng, hình sin, loạn nhịp)</option>
+                            <option value="no">Không có biến đổi ECG</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hyper-renal">Chức năng thận / Thể tích nước tiểu</label>
+                        <select id="hyper-renal" onchange="calculateHyper()">
+                            <option value="normal">Bình thường / Tiểu tốt (&gt;0.5 mL/kg/giờ)</option>
+                            <option value="anuria">Vô niệu / Suy thận cấp hoặc suy thận mạn giai đoạn cuối</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hyper-bg">Đường huyết mao mạch ban đầu</label>
+                        <select id="hyper-bg" onchange="calculateHyper()">
+                            <option value="normal">Bình thường hoặc cao (≥ 7.0 mmol/L)</option>
+                            <option value="low">Thấp (&lt; 7.0 mmol/L) - Cần chủ động truyền Glucose nối tiếp</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hyper-glucose">Chế phẩm Glucose có sẵn pha Insulin</label>
+                        <select id="hyper-glucose" onchange="calculateHyper()">
+                            <option value="g20_250">Glucose 20% chai 250 mL (50g Glucose)</option>
+                            <option value="g10_500">Glucose 10% chai 500 mL (50g Glucose)</option>
+                            <option value="g50_50">Glucose 50% ống 50 mL (25g Glucose - Bơm tiêm điện)</option>
+                            <option value="g5_500">Glucose 5% chai 500 mL (25g Glucose - Nguy cơ quá tải dịch)</option>
+                        </select>
+                    </div>
+
+                    <!-- Định hướng nguyên nhân tăng Kali -->
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-stethoscope text-rose-600"></i> Định hướng nguyên nhân gây tăng Kali
+                        </h3>
+                        <p class="text-xs text-slate-500 mb-3">Tích chọn các đặc điểm lâm sàng thực tế của bệnh nhân:</p>
+                        
+                        <div class="space-y-2">
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hyper-cause-renal" onchange="suggestHyperCauses()" class="mt-0.5 rounded text-rose-600 focus:ring-rose-500">
+                                <span>Suy thận cấp hoặc suy thận mạn tiến triển nặng</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hyper-cause-raas" onchange="suggestHyperCauses()" class="mt-0.5 rounded text-rose-600 focus:ring-rose-500">
+                                <span>Đang dùng thuốc ức chế hệ RAAS (ACEi, ARB, Spironolactone) hoặc NSAIDs</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hyper-cause-lysis" onchange="suggestHyperCauses()" class="mt-0.5 rounded text-rose-600 focus:ring-rose-500">
+                                <span>Ly giải cơ vân, hội chứng ly giải u, tán huyết cấp hoặc chấn thương dập nát cơ</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hyper-cause-acidosis" onchange="suggestHyperCauses()" class="mt-0.5 rounded text-rose-600 focus:ring-rose-500">
+                                <span>Toan chuyển hóa nặng đi kèm</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hyper-cause-intake" onchange="suggestHyperCauses()" class="mt-0.5 rounded text-rose-600 focus:ring-rose-500">
+                                <span>Uống thuốc bổ sung Kali liều cao hoặc truyền máu cũ thể tích lớn</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải: Kết quả xử trí và định hướng nguyên nhân -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Phác đồ 5 bước cụ thể -->
+                    <div id="hyper-result-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                            <h2 class="text-lg font-extrabold text-rose-800 flex items-center gap-2">
+                                <i class="fa-solid fa-notes-medical text-rose-600"></i> 2. Phác đồ can thiệp 5 Bước cụ thể
+                            </h2>
+                            <span id="hyper-severity" class="px-2.5 py-1 text-xs font-black rounded-lg uppercase">Tăng K+ Nguy Kịch</span>
+                        </div>
+
+                        <div class="space-y-5 text-sm">
+                            <!-- Bước 1: Ổn định màng -->
+                            <div class="border-l-4 border-rose-500 pl-3.5 space-y-1">
+                                <div class="font-extrabold text-rose-700 flex items-center gap-1">
+                                    <span class="w-5 h-5 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center text-xs">1</span>
+                                    Ổn định màng tế bào cơ tim (Bảo vệ cơ tim)
+                                </div>
+                                <div id="hyper-step1-detail" class="text-xs md:text-sm text-slate-600">
+                                    <!-- Sẽ điền bằng JS -->
+                                </div>
+                            </div>
+
+                            <!-- Bước 2: Dịch chuyển Kali -->
+                            <div class="border-l-4 border-blue-500 pl-3.5 space-y-1.5">
+                                <div class="font-extrabold text-blue-700 flex items-center gap-1">
+                                    <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs">2</span>
+                                    Dịch chuyển Kali vào nội bào (GI Regimen &amp; Phối hợp)
+                                </div>
+                                <div id="hyper-step2-detail" class="text-xs md:text-sm text-slate-600 space-y-1">
+                                    <!-- Sẽ điền bằng JS -->
+                                </div>
+                                <div id="hyper-step2-glucose-prevention" class="bg-amber-50 border border-amber-200 text-amber-900 p-2.5 rounded-lg text-xs hidden">
+                                    <!-- Cảnh báo phòng hạ đường huyết -->
+                                </div>
+                            </div>
+
+                            <!-- Bước 3: Đào thải Kali -->
+                            <div class="border-l-4 border-emerald-500 pl-3.5 space-y-1">
+                                <div class="font-extrabold text-emerald-700 flex items-center gap-1">
+                                    <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">3</span>
+                                    Đào thải Kali ra khỏi cơ thể
+                                </div>
+                                <div id="hyper-step3-detail" class="text-xs md:text-sm text-slate-600">
+                                    <!-- Sẽ điền bằng JS -->
+                                </div>
+                            </div>
+
+                            <!-- Bước 4 & 5: Theo dõi và Dự phòng -->
+                            <div class="border-l-4 border-slate-500 pl-3.5 space-y-2">
+                                <div class="font-extrabold text-slate-700 flex items-center gap-1">
+                                    <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-xs">4</span>
+                                    Lịch theo dõi sát Đường huyết &amp; Điện giải (UKKA 2023)
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 text-xs">
+                                    <div class="bg-rose-50 border border-rose-100 p-2.5 rounded-lg">
+                                        <strong class="text-rose-800 block mb-1">Theo dõi Kali máu:</strong>
+                                        Kiểm tra tại thời điểm: <strong>1, 2, 4, 6 và 24 giờ</strong> sau khi bắt đầu can thiệp.
+                                    </div>
+                                    <div class="bg-amber-50 border border-amber-100 p-2.5 rounded-lg">
+                                        <strong class="text-amber-800 block mb-1">Theo dõi Đường huyết mao mạch:</strong>
+                                        Tại các phút: <strong>30, 60, 90, 120, 180, 240, 300, 360</strong> (đặc biệt nhạy cảm ở bệnh nhân suy thận).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gợi ý nguyên nhân & xét nghiệm đề xuất -->
+                    <div id="hyper-cause-result-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-lg font-extrabold text-slate-800 border-b border-slate-100 pb-4 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass-chart text-sky-500"></i> Định hướng nguyên nhân &amp; Đề xuất xét nghiệm
+                        </h2>
+                        
+                        <div id="hyper-cause-output" class="text-xs md:text-sm text-slate-700 space-y-4">
+                            <!-- Sẽ được điền bằng JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==================== TAB 3: CẨM NANG & CƠ CHẾ Y HỌC ==================== -->
+        <div id="tab-info" class="hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-8">
+                <!-- Giới thiệu -->
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 mb-3 border-b border-slate-100 pb-4">
+                        <i class="fa-solid fa-circle-info text-sky-500 mr-2"></i> RỐI LOẠN KALI MÁU: CƠ CHẾ BỆNH SINH VÀ LÂM SÀNG
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">
+                        Rối loạn nồng độ kali máu (tăng hoặc giảm) là những cấp cứu nội khoa và hồi sức tích cực thường gặp, đe dọa trực tiếp đến tính mạng do nguy cơ rối loạn nhịp tim ác tính. Kali (K+) là ion nội bào chủ yếu, đóng vai trò quyết định trong việc duy trì điện thế nghỉ của màng tế bào, đặc biệt là ở tế bào cơ tim và dẫn truyền thần kinh.
+                    </p>
+                </div>
+
+                <!-- 2 Cột cơ chế -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Hạ Kali -->
+                    <div class="bg-teal-50/40 border border-teal-100 rounded-xl p-5 space-y-3">
+                        <h3 class="font-extrabold text-teal-800 flex items-center gap-1.5 border-b border-teal-100 pb-2">
+                            <i class="fa-solid fa-arrow-trend-down"></i> Hạ Kali máu (&lt; 3.5 mmol/L)
+                        </h3>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong>3 cơ chế chính:</strong><br>
+                            1. <strong>Mất qua thận:</strong> Sử dụng thuốc lợi tiểu kéo dài, tình trạng cường aldosterone, hoặc toan ống thận (RTA).<br>
+                            2. <strong>Mất qua tiêu hóa:</strong> Nôn ói nặng, tiêu chảy mất dịch, hoặc sonde dạ dày hút dịch liên tục.<br>
+                            3. <strong>Dịch chuyển vào nội bào:</strong> Do tác dụng của Insulin, kích thích thụ thể beta-2 adrenergic (thuốc giãn phế quản), hoặc kiềm hóa máu.
+                        </p>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong>Đặc biệt (Hạ Magne máu đi kèm):</strong> Ức chế hoạt động của bơm Na+-K+-ATPase và mở kênh ROMK ở ống thận, gây rò rỉ Kali liên tục và làm tình trạng hạ Kali kháng trị nếu không được bù đủ Magne.
+                        </p>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong>Biểu hiện ECG:</strong> Sóng T dẹt, xuất hiện sóng U nổi bật, khoảng QT kéo dài và nguy cơ cao xoắn đỉnh.
+                        </p>
+                    </div>
+
+                    <!-- Tăng Kali -->
+                    <div class="bg-rose-50/40 border border-rose-100 rounded-xl p-5 space-y-3">
+                        <h3 class="font-extrabold text-rose-800 flex items-center gap-1.5 border-b border-rose-100 pb-2">
+                            <i class="fa-solid fa-arrow-trend-up"></i> Tăng Kali máu (&gt; 5.0 mmol/L)
+                        </h3>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong>3 cơ chế chính:</strong><br>
+                            1. <strong>Giảm bài tiết qua thận:</strong> Suy thận cấp/mạn, sử dụng thuốc ức chế hệ RAAS (men chuyển/thụ thể), lợi tiểu giữ kali (spironolactone).<br>
+                            2. <strong>Dịch chuyển ra ngoại bào:</strong> Toan chuyển hóa (ion H+ vào tế bào đẩy K+ ra ngoài), tán huyết cấp, ly giải cơ vân, hội chứng ly giải u, hoặc thiếu hụt insulin nặng.<br>
+                            3. <strong>Tăng lượng nạp vào:</strong> Truyền máu cũ thể tích lớn, nạp quá nhiều chế phẩm kali.
+                        </p>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong>Đặc biệt (Độc tính cơ tim):</strong> Tăng Kali làm giảm điện thế nghỉ qua màng, làm chậm quá trình khử cực của cơ tim.
+                        </p>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong>Biểu hiện ECG:</strong> Sóng T cao nhọn đối xứng, PR kéo dài, QRS giãn rộng, biến đổi dạng hình sin và cuối cùng là vô tâm thu nguy kịch.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Phân tích điểm khác biệt y khoa -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
+                    <h3 class="font-extrabold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2">
+                        <i class="fa-solid fa-scale-balanced text-indigo-500"></i> PHÂN TÍCH KHOẢNG TRỐNG VÀ ĐIỂM KHÁC BIỆT GIỮA CÁC HƯỚNG DẪN LÂM SÀNG
+                    </h3>
+                    
+                    <div class="space-y-4 text-xs md:text-sm text-slate-700">
+                        <div>
+                            <strong class="text-indigo-800 block">1. Liều lượng Calcium Gluconate trong Tăng Kali Máu:</strong>
+                            <p class="mt-1 leading-relaxed">
+                                Các hướng dẫn cũ thường đề xuất tiêm 10 mL Calcium Gluconate 10% trong 2-5 phút. Tuy nhiên, cảnh báo an toàn mới nhất từ <strong>Hiệp hội Thận học Anh (UKKA 2023)</strong> chỉ ra rằng liều 10 mL thường gây thiếu liều (underdosing) bảo vệ cơ tim, dễ dẫn đến ngưng tim. UKKA khuyến cáo phác đồ chuẩn là <strong>30 mL Calcium Gluconate 10% truyền trong 10 phút</strong> để đảm bảo đủ lượng canxi nguyên tố tương đương 10 mL Calcium Chloride 10% (6.8 mmol Calcium).
+                            </p>
+                        </div>
+
+                        <div>
+                            <strong class="text-indigo-800 block">2. Tranh cãi về liều Insulin và nguy cơ hạ đường huyết:</strong>
+                            <p class="mt-1 leading-relaxed">
+                                Một số nghiên cứu cũ đề xuất giảm liều Insulin từ 10 đơn vị xuống 5 đơn vị ở bệnh nhân suy thận để giảm rủi ro hạ đường huyết. Tuy nhiên, UKKA 2023 chỉ ra rằng liều 5 đơn vị làm giảm đáng kể hiệu quả hạ Kali máu (kém hơn 0.2 - 0.3 mmol/L). Trong bệnh cảnh cấp cứu đe dọa tính mạng, hiệu quả hạ Kali phải đặt lên hàng đầu. Do đó, <strong>giữ nguyên liều 10 đơn vị Insulin</strong> và chủ động phòng ngừa hạ đường huyết bằng truyền nối tiếp Dextrose 10% (50 mL/giờ trong 5 giờ) nếu đường huyết ban đầu &lt; 7.0 mmol/L.
+                            </p>
+                        </div>
+
+                        <div>
+                            <strong class="text-indigo-800 block">3. Sự loại bỏ Sodium Polystyrene Sulfonate (SPS / Resonium):</strong>
+                            <p class="mt-1 leading-relaxed">
+                                Các hướng dẫn cập nhật (UKKA 2023, KDIGO) <strong>chính thức loại bỏ SPS/CPS (Resonium)</strong> ra khỏi xử trí cấp cứu do khởi phát tác dụng quá chậm (4-6h), hiệu quả không dự đoán trước được và nguy cơ cao gây hoại tử ruột. Thay thế hoàn toàn bằng các thuốc gắn kết thế hệ mới như Sodium Zirconium Cyclosilicate (SZC/Lokelma) có tác dụng nhanh trong vòng 1 giờ.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tài liệu tham khảo -->
+                <div class="border-t border-slate-100 pt-6">
+                    <h3 class="text-sm font-bold text-slate-800 mb-3">Tài Liệu Tham Khảo Y Khoa Chứng Cứ:</h3>
+                    <ul class="list-decimal pl-5 space-y-1.5 text-xs text-slate-500">
+                        <li>Alfonzo A, Harrison A, Baines R. <em>UK Kidney Association Clinical Practice Guidelines: Treatment of Acute Hyperkalaemia in Adults</em>. UK Kidney Association; 2023.</li>
+                        <li>Kim MJ, Valerio C, Knobloch GK. <em>Potassium Disorders: Hypokalemia and Hyperkalemia</em>. Am Fam Physician. 2023;107(1):59-70.</li>
+                        <li>Bộ Y tế Việt Nam. <em>Hướng dẫn quy trình kỹ thuật chuyên ngành Hồi sức – Cấp cứu và Chống độc</em>. Quyết định số 1904/QĐ-BYT.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t-4 border-teal-600 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div>
+                <p class="font-bold text-white mb-1"><i class="fa-solid fa-staff-snake text-teal-500 mr-2"></i> OncoPortal &copy; 2026</p>
+                <p class="text-xs">Công cụ hỗ trợ nội bộ. Vui lòng đối chiếu với thực tế lâm sàng.</p>
+            </div>
+            <div class="flex gap-4 text-xs">
+                <a href="#" class="hover:text-white transition">Hỗ trợ kỹ thuật</a>
+                <a href="#" class="hover:text-white transition">Báo cáo lỗi</a>
+                <a href="#" class="hover:text-white transition">Bảo mật thông tin</a>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <!-- JavaScript Logic -->
+    <script>
+        // HÀM CHUYỂN TAB
+        function switchTab(tabName) {
+            const tabs = ['hypo', 'hyper', 'info'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}-btn`).className = "py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 border-transparent text-slate-500 hover:text-slate-700 transition flex items-center gap-2";
+            });
+
+            // Hiển thị tab đang chọn
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const btn = document.getElementById(`tab-${tabName}-btn`);
+            
+            if (tabName === 'hypo') {
+                btn.className = "py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 tab-active tab-hypo-active flex items-center gap-2";
+                calculateHypo();
+            } else if (tabName === 'hyper') {
+                btn.className = "py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 tab-active tab-hyper-active flex items-center gap-2";
+                calculateHyper();
+            } else {
+                btn.className = "py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 tab-active tab-info-active flex items-center gap-2";
+            }
+
+            // Cập nhật URL hash để người dùng có thể chia sẻ hoặc load đúng tab
+            window.location.hash = tabName;
+        }
+
+
+
+        // LƯU TRẠNG THÁI NGƯỜI DÙNG EDIT SỐ ỐNG KCL
+        let userEditedTubes = false;
+
+        function onTubesInput() {
+            userEditedTubes = true;
+            calculateHypo();
+        }
+
+        function resetTubes() {
+            userEditedTubes = false;
+            calculateHypo();
+        }
+
+        function toggleCustomDiluent() {
+            const val = document.getElementById('hypo-diluent').value;
+            const customBox = document.getElementById('hypo-custom-diluent-box');
+            if (val === 'custom') {
+                customBox.classList.remove('hidden');
+            } else {
+                customBox.classList.add('hidden');
+            }
+            calculateHypo();
+        }
+
+        // ==================== TÍNH TOÁN HẠ KALI ====================
+        function calculateHypo() {
+            const weight = parseFloat(document.getElementById('hypo-weight').value) || 0;
+            const currentK = parseFloat(document.getElementById('hypo-k').value) || 0;
+            const symptoms = document.getElementById('hypo-symptoms').value;
+            const mgStatus = document.getElementById('hypo-mg').value;
+            const line = document.getElementById('hypo-line').value;
+            const product = document.getElementById('hypo-product').value;
+            
+            let diluent = parseFloat(document.getElementById('hypo-diluent').value);
+            if (document.getElementById('hypo-diluent').value === 'custom') {
+                diluent = parseFloat(document.getElementById('hypo-custom-diluent').value) || 1000;
+            }
+
+            if (weight <= 0 || currentK <= 0) return;
+
+            // 1. Phân loại mức độ nặng & Deficit
+            let severity = "Hạ K+ Nhẹ";
+            let severityClass = "bg-sky-100 text-sky-700 border border-sky-200";
+            let deficitPerKg = 0.5;
+
+            if (currentK < 2.5 || symptoms === 'yes') {
+                severity = "Hạ K+ Nguy Kịch (Nặng)";
+                severityClass = "bg-rose-100 text-rose-700 border border-rose-200 animate-pulse";
+                deficitPerKg = 2.0;
+            } else if (currentK >= 2.5 && currentK < 3.0) {
+                severity = "Hạ K+ Trung Bình";
+                severityClass = "bg-amber-100 text-amber-700 border border-amber-200";
+                deficitPerKg = 1.0;
+            }
+
+            const sevBadge = document.getElementById('hypo-severity');
+            sevBadge.innerText = severity;
+            sevBadge.className = `px-2.5 py-1 text-xs font-black rounded-lg uppercase ${severityClass}`;
+
+            // Tính lượng thiếu hụt cơ thể ước lượng
+            const totalDeficit = Math.round(weight * deficitPerKg * 10);
+            document.getElementById('hypo-deficit-val').innerText = totalDeficit;
+
+            // 2. Chế phẩm & Nồng độ an toàn
+            const mmolPerTube = (product === 'kcl10') ? 13.4 : 15.0;
+            const productName = (product === 'kcl10') ? "KCl 10%" : "KCl 11.2%";
+            const maxConc = (line === 'peripheral') ? 40 : 80;
+
+            // Giới hạn an toàn của chai dịch chọn
+            const maxKmmolInVol = (maxConc * diluent) / 1000;
+            const exactTubes = maxKmmolInVol / mmolPerTube;
+            
+            // Làm tròn lâm sàng đến 0.1 ống
+            let maxSafeTubes = Math.floor(exactTubes * 10) / 10;
+            if (maxSafeTubes < 0.1) maxSafeTubes = 0.1;
+            
+            document.getElementById('hypo-safe-max-tubes').innerText = maxSafeTubes.toFixed(1);
+
+            let clinicalTubes = parseFloat(document.getElementById('hypo-actual-tubes').value);
+            if (isNaN(clinicalTubes) || !userEditedTubes) {
+                clinicalTubes = maxSafeTubes;
+                document.getElementById('hypo-actual-tubes').value = clinicalTubes.toFixed(1);
+            }
+
+            const actualKmmol = clinicalTubes * mmolPerTube;
+            const actualConc = actualKmmol / (diluent / 1000);
+
+            // Điền kết quả
+            document.getElementById('hypo-recipe-tubes').innerText = `${clinicalTubes.toFixed(1)} ống`;
+            document.getElementById('hypo-recipe-product').innerText = productName;
+            document.getElementById('hypo-recipe-ml').innerText = `${(clinicalTubes * 10).toFixed(1)} mL`;
+            document.getElementById('hypo-recipe-diluent').innerText = `dung môi ${diluent} mL`;
+            document.getElementById('hypo-recipe-conc').innerText = `${actualConc.toFixed(1)} mmol/L`;
+
+            // Badge nồng độ an toàn
+            const concBadge = document.getElementById('hypo-conc-badge');
+            if (actualConc <= maxConc) {
+                concBadge.innerText = "An toàn";
+                concBadge.className = "px-2 py-0.5 text-[10px] font-bold rounded-full ml-1 bg-emerald-100 text-emerald-700";
+                document.getElementById('hypo-alert-conc').classList.add('hidden');
+            } else {
+                concBadge.innerText = "Quá tải nồng độ";
+                concBadge.className = "px-2 py-0.5 text-[10px] font-bold rounded-full ml-1 bg-rose-100 text-rose-700 animate-bounce";
+                if (line === 'peripheral') {
+                    document.getElementById('hypo-alert-conc').classList.remove('hidden');
+                }
+            }
+
+            // Tốc độ truyền tối đa (10 mmol/h đối với ngoại vi, 20 mmol/h đối với trung tâm khi có chỉ định khẩn)
+            const speedLimitK = (line === 'peripheral') ? 10 : 20;
+            document.getElementById('hypo-recipe-krate').innerText = `${speedLimitK} mmol/giờ`;
+
+            const infusionRateMlHr = Math.round((speedLimitK / actualConc) * 1000);
+            document.getElementById('hypo-recipe-rate').innerText = `${infusionRateMlHr} mL/giờ`;
+
+            const dropsPerMin = Math.round((infusionRateMlHr * 20) / 60);
+            document.getElementById('hypo-recipe-drops').innerText = dropsPerMin;
+
+            // Hiển thị cảnh báo Magne
+            const alertMg = document.getElementById('hypo-alert-mg');
+            if (mgStatus === 'low') {
+                alertMg.classList.remove('hidden');
+                document.getElementById('hypo-alert-mg-text').innerHTML = `Hạ Magne máu đi kèm sẽ làm mở kênh ROMK gây bài xuất Kali liên tục ở thận. Nếu không bù đủ Magne, việc bù Kali sẽ bị kháng trị. Bù ngay: <strong>Magnesium Sulfate 1-2g tiêm/truyền tĩnh mạch</strong>.`;
+            } else if (mgStatus === 'unknown') {
+                alertMg.classList.remove('hidden');
+                alertMg.innerHTML = `<div class="font-bold flex items-center gap-1.5 text-amber-800"><i class="fa-solid fa-circle-question"></i> KHUYẾN CÁO KIỂM TRA MAGNE MÁU</div><p>Chưa có kết quả Magne. Khuyến cáo nên làm xét nghiệm Magne máu. Nếu có giảm Magne đi kèm, phải bù Magne (Magnesium Sulfate IV) mới điều trị được hạ Kali kháng trị.</p>`;
+            } else {
+                alertMg.classList.add('hidden');
+            }
+
+            // Cập nhật định hướng nguyên nhân
+            suggestHypoCauses();
+        }
+
+        // Định hướng nguyên nhân hạ Kali
+        function suggestHypoCauses() {
+            const isDiuretic = document.getElementById('hypo-cause-diuretic').checked;
+            const isGI = document.getElementById('hypo-cause-gi').checked;
+            const isShift = document.getElementById('hypo-cause-shift').checked;
+            const isRTA = document.getElementById('hypo-cause-rta').checked;
+            const mgStatus = document.getElementById('hypo-mg').value;
+
+            const outputEl = document.getElementById('hypo-cause-output');
+            let html = "";
+
+            if (!isDiuretic && !isGI && !isShift && !isRTA && mgStatus !== 'low') {
+                html = `
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-circle-info text-sky-500"></i> Chưa chọn đặc điểm lâm sàng:</strong>
+                        <p class="mb-2">Vui lòng tích chọn các biểu hiện ở cột trái để nhận định hướng nguyên nhân chi tiết.</p>
+                        <strong class="text-slate-800 block mt-3 mb-1">Đề xuất các bước chẩn đoán cơ bản tại viện:</strong>
+                        <ul class="list-disc pl-5 space-y-1 text-slate-600">
+                            <li>Lấy mẫu nước tiểu kiểm tra <strong>Kali niệu</strong> bất kỳ (hoặc Kali niệu 24h) để phân biệt:
+                                <ul class="list-circle pl-5 text-[11px] mt-0.5 animate-fadeIn">
+                                    <li>K+ niệu &lt; 20 mmol/L (hoặc K/Cr niệu &lt; 1.5): Mất ngoài thận (tiêu hóa, dịch chuyển tế bào).</li>
+                                    <li>K+ niệu ≥ 20 mmol/L (hoặc K/Cr niệu ≥ 1.5): Mất qua thận (lợi tiểu, toan ống thận, cường aldosterone).</li>
+                                </ul>
+                            </li>
+                            <li>Đo huyết áp và kiểm tra thăng bằng toan kiềm (làm khí máu động mạch).</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                html += `<div class="space-y-3">`;
+                
+                if (isDiuretic) {
+                    html += `
+                        <div class="p-3 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
+                            <strong class="text-amber-800 block text-xs md:text-sm"><i class="fa-solid fa-pills mr-1"></i> Do thuốc lợi tiểu (Quai/Thiazide):</strong>
+                            <p class="text-slate-600 mt-0.5">Lợi tiểu làm tăng đào thải Na+ và nước tại ống thận, gián tiếp kích hoạt Aldosterone tăng trao đổi đào thải K+ và H+. Khuyến cáo: Nếu bắt buộc dùng lợi tiểu, nên cân nhắc kết hợp Spironolactone (lợi tiểu giữ K+) hoặc bổ sung Kali uống chủ động hàng ngày.</p>
+                        </div>
+                    `;
+                }
+
+                if (isGI) {
+                    html += `
+                        <div class="p-3 bg-teal-50 border-l-4 border-teal-500 rounded-r-lg">
+                            <strong class="text-teal-800 block text-xs md:text-sm"><i class="fa-solid fa-toilet mr-1"></i> Mất qua đường tiêu hóa (Nôn, Tiêu chảy, Sonde):</strong>
+                            <p class="text-slate-600 mt-0.5">Nôn làm mất dịch toan gây kiềm chuyển hóa, kích thích thận đào thải K+. Tiêu chảy trực tiếp làm mất K+ qua dịch ruột chứa nhiều bicarbonate. Khuyến cáo: Bù đủ thể tích dịch tuần hoàn bằng NaCl 0.9%, tránh bù bằng dịch nhược trương.</p>
+                        </div>
+                    `;
+                }
+
+                if (isShift) {
+                    html += `
+                        <div class="p-3 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
+                            <strong class="text-blue-800 block text-xs md:text-sm"><i class="fa-solid fa-shuffle mr-1"></i> Cơ chế dịch chuyển vào nội bào:</strong>
+                            <p class="text-slate-600 mt-0.5">Insulin hoặc kích thích Beta-2 làm tăng hoạt tính bơm Na+-K+-ATPase kéo K+ ngoại bào vào tế bào. Khuyến cáo: Tình trạng này là tạm thời. Thận trọng khi bù K+ vì khi các thuốc này hết tác dụng, K+ sẽ di chuyển ngược lại ra ngoài, có nguy cơ gây <strong>Tăng Kali máu dội ngược (Rebound Hyperkalemia)</strong>.</p>
+                        </div>
+                    `;
+                }
+
+                if (isRTA) {
+                    html += `
+                        <div class="p-3 bg-purple-50 border-l-4 border-purple-500 rounded-r-lg">
+                            <strong class="text-purple-800 block text-xs md:text-sm"><i class="fa-solid fa-prescription-bottle mr-1"></i> Toan hóa ống thận (RTA) / Toan máu:</strong>
+                            <p class="text-slate-600 mt-0.5">Rối loạn bài tiết ion H+ tại ống thận làm giảm tái hấp thu K+. Khuyến cáo: Làm Khí máu động mạch và đo pH nước tiểu. Nếu chẩn đoán xác định RTA, ưu tiên bù Kali bằng các muối kiềm hóa như <strong>Potassium Citrate</strong> hoặc <strong>Potassium Bicarbonate</strong> thay vì KCl.</p>
+                        </div>
+                    `;
+                }
+
+                if (mgStatus === 'low') {
+                    html += `
+                        <div class="p-3 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg">
+                            <strong class="text-rose-800 block text-xs md:text-sm"><i class="fa-solid fa-circle-exclamation mr-1"></i> Hạ Magne máu đi kèm:</strong>
+                            <p class="text-slate-600 mt-0.5">Hạ Magne làm bất hoạt bơm Na-K-ATPase ở tế bào ống thận và mở kênh ROMK gây rò rỉ K+ vào lòng ống và thải ra nước tiểu. Khuyến cáo: <strong>BẮT BUỘC bù Magne Sulfate 1-2g truyền tĩnh mạch</strong>. Bù Magne là chìa khóa để giải quyết tình trạng hạ Kali kháng trị.</p>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            }
+
+            outputEl.innerHTML = html;
+        }
+
+
+        // ==================== TÍNH TOÁN TĂNG KALI ====================
+        function calculateHyper() {
+            const weight = parseFloat(document.getElementById('hyper-weight').value) || 0;
+            const currentK = parseFloat(document.getElementById('hyper-k').value) || 0;
+            const ecg = document.getElementById('hyper-ecg').value;
+            const renal = document.getElementById('hyper-renal').value;
+            const bgStatus = document.getElementById('hyper-bg').value;
+            const glucose = document.getElementById('hyper-glucose').value;
+
+            if (weight <= 0 || currentK <= 0) return;
+
+            // 1. Phân mức độ nặng
+            let severity = "Tăng K+ Nhẹ";
+            let severityClass = "bg-sky-100 text-sky-700 border border-sky-200";
+            let isUrgent = false;
+
+            if (currentK >= 6.5 || ecg === 'yes') {
+                severity = "Tăng K+ Nguy Kịch";
+                severityClass = "bg-rose-100 text-rose-700 border border-rose-200 animate-pulse font-black";
+                isUrgent = true;
+            } else if (currentK >= 6.0 && currentK < 6.5) {
+                severity = "Tăng K+ Trung Bình";
+                severityClass = "bg-amber-100 text-amber-700 border border-amber-200";
+            }
+
+            const sevBadge = document.getElementById('hyper-severity');
+            sevBadge.innerText = severity;
+            sevBadge.className = `px-2.5 py-1 text-xs font-black rounded-lg uppercase ${severityClass}`;
+
+            // 2. Bước 1: Ổn định màng cơ tim (Canxi)
+            const step1Detail = document.getElementById('hyper-step1-detail');
+            let step1Text = "";
+            
+            if (isUrgent) {
+                step1Text = `
+                    <p class="text-rose-700 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> CHỈ ĐỊNH KHẨN CẤP ĐỂ BẢO VỆ TIM:</p>
+                    <ul class="list-disc pl-5 mt-1 space-y-1 text-slate-700">
+                        <li><strong>Calcium Gluconate 10%:</strong> Truyền tĩnh mạch <strong>30 mL</strong> (3 ống) trong <strong>10 phút</strong> (Theo UKKA 2023 / MHRA, liều 10 mL thường không đủ tác dụng bảo vệ tim).</li>
+                        <li><strong>Hoặc Calcium Chloride 10%:</strong> Tiêm/truyền tĩnh mạch <strong>10 mL</strong> (1 ống) trong <strong>5 phút</strong>. <em>Lưu ý:</em> Chỉ truyền qua tĩnh mạch trung tâm vì nguy cơ hoại tử mô nếu thoát mạch.</li>
+                        <li><em>Lưu ý:</em> Hiệu quả xuất hiện sau 1-3 phút nhưng chỉ kéo dài 30-60 phút. Có thể lặp lại liều nếu ECG không cải thiện sau 5-10 phút.</li>
+                    </ul>
+                `;
+            } else {
+                step1Text = `
+                    <p class="text-slate-600">Chưa có chỉ định tiêm Canxi cấp cứu (Do K+ &lt; 6.5 mmol/L và ECG bình thường). Tuy nhiên cần chuẩn bị sẵn sàng thuốc ở tủ trực và theo dõi sát ECG.</p>
+                `;
+            }
+            step1Detail.innerHTML = step1Text;
+
+            // 3. Bước 2: Dịch chuyển Kali (GI Regimen)
+            const step2Detail = document.getElementById('hyper-step2-detail');
+            let glucoseGram = 50;
+            let fluidName = "Glucose 20% (250 mL)";
+            let insulinDose = 10;
+            let runTimeMinutes = 30;
+            let vol = 250;
+
+            if (glucose === 'g10_500') {
+                glucoseGram = 50;
+                fluidName = "Glucose 10% (500 mL)";
+                insulinDose = 10;
+                runTimeMinutes = 45;
+                vol = 500;
+            } else if (glucose === 'g50_50') {
+                glucoseGram = 25;
+                fluidName = "Glucose 50% (50 mL)";
+                insulinDose = 10;
+                runTimeMinutes = 20;
+                vol = 50;
+            } else if (glucose === 'g5_500') {
+                glucoseGram = 25;
+                fluidName = "Glucose 5% (500 mL)";
+                insulinDose = 5; 
+                runTimeMinutes = 60;
+                vol = 500;
+            }
+
+            const pumpSpeed = Math.round((vol / runTimeMinutes) * 60);
+
+            let step2Text = `
+                <div class="space-y-1 text-slate-700">
+                    <p>• Phác đồ phân phối: Pha <strong>${insulinDose} UI Insulin Actrapid (regular)</strong> vào chai <strong>${fluidName}</strong>.</p>
+                    <p>• Tốc độ truyền máy: Truyền tĩnh mạch trong <strong>${runTimeMinutes} phút</strong> (Tốc độ máy truyền dịch: <span class="font-bold text-blue-600">${pumpSpeed} mL/giờ</span>).</p>
+                    <p>• Phối hợp: <strong>Khí dung Salbutamol 10 - 20 mg</strong> (2-4 ống khí dung 5mg) phun liên tục. Không dùng khí dung đơn trị liệu (đặc biệt ở suy thận ESRD đề kháng 40%).</p>
+                </div>
+            `;
+            step2Detail.innerHTML = step2Text;
+
+            // Phòng hạ đường huyết
+            const step2BgAlert = document.getElementById('hyper-step2-glucose-prevention');
+            if (bgStatus === 'low') {
+                step2BgAlert.classList.remove('hidden');
+                step2BgAlert.innerHTML = `
+                    <strong class="text-amber-800 block"><i class="fa-solid fa-circle-exclamation mr-1"></i> BẮT BUỘC TRUYỀN NỐI TIẾP G10% PHÒNG HẠ ĐƯỜNG HUYẾT (UKKA 2023):</strong>
+                    <p class="mt-0.5">Do đường huyết ban đầu &lt; 7.0 mmol/L, bắt buộc truyền nối tiếp Glucose 10% với tốc độ <strong>50 mL/giờ trong 5 giờ</strong> tiếp theo sau khi truyền xong phác đồ Insulin (Tổng lượng 25g Glucose) để tránh hạ đường huyết muộn do Insulin.</p>
+                `;
+            } else {
+                step2BgAlert.classList.add('hidden');
+            }
+
+            // 4. Bước 3: Đào thải Kali
+            const step3Detail = document.getElementById('hyper-step3-detail');
+            let step3Text = "";
+            
+            if (renal === 'anuria') {
+                step3Text = `
+                    <ul class="list-disc pl-5 space-y-1 text-slate-700">
+                        <li><strong class="text-rose-600">Bệnh nhân vô niệu / suy thận nặng:</strong> Lợi tiểu quai (Furosemide) mất tác dụng đào thải. <strong>CHỐNG CHỈ ĐỊNH DÙNG LỢI TIỂU</strong>.</li>
+                        <li><strong class="text-rose-700">Chỉ định Lọc máu cấp cứu (Hemodialysis):</strong> Hội chẩn ngay lọc máu nếu K+ tiếp tục tăng hoặc toan kiềm nặng, dư dịch đe dọa phù phổi.</li>
+                        <li><strong>Thuốc gắn kết Kali đường uống:</strong> Uống SZC (Lokelma) 10g x 3 lần/ngày trong 48h (Tác dụng bắt đầu sau 1 giờ). Loại bỏ hoàn toàn Resonium/SPS do nguy cơ hoại tử ruột.</li>
+                    </ul>
+                `;
+            } else {
+                step3Text = `
+                    <ul class="list-disc pl-5 space-y-1 text-slate-700">
+                        <li><strong>Thuốc lợi tiểu quai:</strong> Tiêm tĩnh mạch <strong>Furosemide 20 - 40 mg</strong> (1 - 2 ống). Có thể kết hợp truyền NaCl 0.9% để ép thận bài niệu nếu không dư dịch.</li>
+                        <li><strong>Thuốc gắn kết Kali đường uống:</strong> Uống SZC (Lokelma) 10g x 3 lần/ngày (Bắt đầu hạ K+ sau 1h) hoặc Patiromer 8.4g - 25.2g/ngày.</li>
+                    </ul>
+                `;
+            }
+            step3Detail.innerHTML = step3Text;
+
+            // Cập nhật nguyên nhân
+            suggestHyperCauses();
+        }
+
+        // Định hướng nguyên nhân tăng Kali
+        function suggestHyperCauses() {
+            const isRenal = document.getElementById('hyper-cause-renal').checked;
+            const isRaas = document.getElementById('hyper-cause-raas').checked;
+            const isLysis = document.getElementById('hyper-cause-lysis').checked;
+            const isAcidosis = document.getElementById('hyper-cause-acidosis').checked;
+            const isIntake = document.getElementById('hyper-cause-intake').checked;
+
+            const outputEl = document.getElementById('hyper-cause-output');
+            let html = "";
+
+            if (!isRenal && !isRaas && !isLysis && !isAcidosis && !isIntake) {
+                html = `
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-circle-info text-rose-500"></i> Chưa chọn đặc điểm lâm sàng:</strong>
+                        <p class="mb-2">Vui lòng tích chọn các biểu hiện ở cột trái để nhận định hướng nguyên nhân chi tiết.</p>
+                        <strong class="text-slate-800 block mt-3 mb-1">Cần loại trừ Tăng Kali giả tạo (Pseudohyperkalemia):</strong>
+                        <ul class="list-disc pl-5 space-y-1 text-slate-600">
+                            <li>Xảy ra do garo tay quá chặt hoặc quá lâu khi lấy máu.</li>
+                            <li>Lắc mạnh ống nghiệm gây vỡ hồng cầu giải phóng K+ ra ngoại bào (tán huyết in vitro).</li>
+                            <li>Tăng bạch cầu hoặc tiểu cầu số lượng lớn trong ống nghiệm.</li>
+                            <li><strong>Hành động:</strong> Nếu lâm sàng bình thường, ECG bình thường mà K+ tăng đột ngột, nên xét nghiệm lại mẫu máu tĩnh mạch thứ hai (không buộc garo).</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                html += `<div class="space-y-3">`;
+
+                if (isRenal) {
+                    html += `
+                        <div class="p-3 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                            <strong class="text-red-800 block text-xs md:text-sm"><i class="fa-solid fa-circle-radiation mr-1"></i> Do suy thận cấp hoặc suy thận mạn:</strong>
+                            <p class="text-slate-600 mt-0.5">Thận đảm nhận thải 90% lượng Kali của cơ thể. Suy giảm độ lọc cầu thận nặng (eGFR &lt; 30) hoặc vô niệu trực tiếp chặn đường bài tiết K+. Khuyến cáo: Ngưng toàn bộ thuốc giữ Kali, theo dõi sát lượng nước tiểu 24h và sẵn sàng lọc máu nếu điều trị nội khoa thất bại.</p>
+                        </div>
+                    `;
+                }
+
+                if (isRaas) {
+                    html += `
+                        <div class="p-3 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
+                            <strong class="text-amber-800 block text-xs md:text-sm"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Do thuốc ức chế hệ RAAS hoặc NSAIDs:</strong>
+                            <p class="text-slate-600 mt-0.5">Thuốc ức chế men chuyển (ACEi), chẹn thụ thể (ARB) hoặc thuốc lợi tiểu kháng aldosterone (Spironolactone) trực tiếp làm giảm bài tiết Kali ở ống lượn xa. Thuốc NSAIDs làm giảm tưới máu thận và giảm aldosterone. Khuyến cáo: <strong>BẮT BUỘC tạm ngưng</strong> các thuốc này ngay lập tức cho đến khi Kali máu về bình thường.</p>
+                        </div>
+                    `;
+                }
+
+                if (isLysis) {
+                    html += `
+                        <div class="p-3 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg">
+                            <strong class="text-rose-800 block text-xs md:text-sm"><i class="fa-solid fa-burst mr-1"></i> Dịch chuyển do hủy hoại tế bào diện rộng:</strong>
+                            <p class="text-slate-600 mt-0.5">Ly giải cơ vân, tán huyết hoặc ly giải u (khi hóa trị) giải phóng một lượng cực lớn Kali từ nội bào ra ngoài tuần hoàn ngoại bào. Khuyến cáo: Theo dõi sát Creatinine Phosphokinase (CK) máu và Creatinine niệu. Truyền dịch kiềm hóa nước tiểu nếu có ly giải cơ vân để tránh suy thận cấp do sắc tố cơ.</p>
+                        </div>
+                    `;
+                }
+
+                if (isAcidosis) {
+                    html += `
+                        <div class="p-3 bg-purple-50 border-l-4 border-purple-500 rounded-r-lg">
+                            <strong class="text-purple-800 block text-xs md:text-sm"><i class="fa-solid fa-vial mr-1"></i> Dịch chuyển do toan chuyển hóa:</strong>
+                            <p class="text-slate-600 mt-0.5">Khi nồng độ H+ ngoại bào tăng cao (toan hóa máu), các ion H+ sẽ đi vào trong tế bào để đệm, buộc ion K+ phải dịch chuyển ra ngoài tế bào để duy trì cân bằng điện tích. Khuyến cáo: Truyền Sodium Bicarbonate tĩnh mạch (nếu pH &lt; 7.2 hoặc Bicarbonate &lt; 15 mEq/L) giúp đẩy Kali trở lại nội bào.</p>
+                        </div>
+                    `;
+                }
+
+                if (isIntake) {
+                    html += `
+                        <div class="p-3 bg-sky-50 border-l-4 border-sky-500 rounded-r-lg">
+                            <strong class="text-sky-800 block text-xs md:text-sm"><i class="fa-solid fa-bottle-droplet mr-1"></i> Tăng nạp Kali từ bên ngoài:</strong>
+                            <p class="text-slate-600 mt-0.5">Uống thuốc bổ sung Kali quá liều hoặc truyền máu cũ thể tích lớn (trong máu cũ, hồng cầu bị vỡ giải phóng lượng K+ tự do rất cao). Khuyến cáo: Kiểm tra toàn bộ nguồn thuốc uống, ngưng truyền dịch chứa K+ (như Ringer Lactate) và kiểm tra hạn dùng các túi chế phẩm máu truyền.</p>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            }
+
+            outputEl.innerHTML = html;
+        }
+
+
+        // KHỞI TẠO TRANG
+        window.onload = function() {
+            // Đọc hash từ URL để mở tab tương ứng
+            let hash = window.location.hash;
+            if (hash === '#hyper') {
+                switchTab('hyper');
+            } else if (hash === '#info') {
+                switchTab('info');
+            } else {
+                switchTab('hypo'); // Mặc định mở hypo
+            }
+        };
+
+        // Bắt sự kiện hash thay đổi
+        window.onhashchange = function() {
+            let hash = window.location.hash;
+            if (hash === '#hyper') {
+                switchTab('hyper');
+            } else if (hash === '#info') {
+                switchTab('info');
+            } else if (hash === '#hypo') {
+                switchTab('hypo');
+            }
+        };
+    </script>
+</body>
+</html>

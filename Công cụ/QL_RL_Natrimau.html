@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Rối Loạn Natri Máu - OncoPortal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; }
+        .hero-gradient {
+            background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%);
+        }
+        .tab-active {
+            border-bottom-width: 4px;
+            font-weight: 800;
+        }
+        .tab-hypo-active {
+            border-color: #0d9488;
+            color: #0d9488;
+        }
+        .tab-hyper-active {
+            border-color: #e11d48;
+            color: #e11d48;
+        }
+        .tab-info-active {
+            border-color: #475569;
+            color: #475569;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: #334155;
+            font-size: 0.875rem;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            background-color: #ffffff;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        }
+        .result-panel {
+            transition: all 0.3s ease;
+        }
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='../index.html'">
+                <div class="bg-teal-600 text-white p-2 rounded-lg shadow-sm">
+                    <i class="fa-solid fa-staff-snake text-xl"></i>
+                </div>
+                <span class="font-black text-xl text-teal-800 tracking-tight">Onco<span class="text-sky-500">Portal</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="../index.html" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Trang chủ</a>
+                <a href="#" class="text-teal-600 font-bold border-b-2 border-teal-600 px-1 py-2">Công cụ</a>
+                <a href="#" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Phác đồ</a>
+                <a href="#" class="text-slate-500 hover:text-teal-600 font-medium px-1 py-2 transition">Nghiên cứu</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-8 px-4 shadow-inner">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-3xl md:text-4xl font-black mb-2 drop-shadow-md">Quản Lý Rối Loạn Natri Máu</h1>
+            <p class="text-base text-teal-50 max-w-3xl mx-auto font-medium opacity-90">
+                Tính toán cân bằng dịch truyền ưu trương/nhược trương theo công thức Adrogue-Madias và định hướng nguyên nhân lâm sàng.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <div class="bg-white border-b border-slate-200 sticky top-16 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-center space-x-2 md:space-x-8">
+                <button id="tab-hypo-btn" onclick="switchTab('hypo')" class="py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 border-transparent text-slate-500 hover:text-teal-600 transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-trend-down text-teal-500"></i> Hạ Natri Máu (&lt; 135)
+                </button>
+                <button id="tab-hyper-btn" onclick="switchTab('hyper')" class="py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 border-transparent text-slate-500 hover:text-rose-600 transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-trend-up text-rose-500"></i> Tăng Natri Máu (&gt; 145)
+                </button>
+                <button id="tab-info-btn" onclick="switchTab('info')" class="py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 border-transparent text-slate-500 hover:text-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-book-medical text-slate-500"></i> Cẩm nang &amp; Cơ chế y học
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- ==================== TAB 1: HẠ NATRI MÁU ==================== -->
+        <div id="tab-hypo" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Cột trái: Nhập thông số lâm sàng -->
+                <div class="lg:col-span-5 space-y-5 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-extrabold text-teal-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question text-teal-600"></i> 1. Thông số lâm sàng &amp; Dịch truyền
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label for="hypo-gender">Thể trạng &amp; Hệ số nhân trắc (TBW)</label>
+                        <select id="hypo-gender" onchange="calculateHypo()">
+                            <option value="male_adult">Nam trưởng thành (Hệ số 0.6)</option>
+                            <option value="female_adult">Nữ trưởng thành (Hệ số 0.5)</option>
+                            <option value="male_elderly">Nam cao tuổi / Suy kiệt (Hệ số 0.5)</option>
+                            <option value="female_elderly">Nữ cao tuổi / Suy kiệt (Hệ số 0.45)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="hypo-weight">Cân nặng (kg)</label>
+                            <input type="number" id="hypo-weight" value="60" min="20" max="200" oninput="calculateHypo()">
+                        </div>
+                        <div class="form-group">
+                            <label for="hypo-na">Na+ hiện tại (mmol/L)</label>
+                            <input type="number" id="hypo-na" value="115" min="90" max="134" oninput="calculateHypo()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hypo-symptoms">Triệu chứng lâm sàng nặng</label>
+                        <select id="hypo-symptoms" onchange="calculateHypo()">
+                            <option value="no">Không có triệu chứng nặng / Triệu chứng trung bình</option>
+                            <option value="yes">Có (Co giật, hôn mê, suy hô hấp, nôn mửa dữ dội)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hypo-risk">Yếu tố nguy cơ cao bị hủy myelin (ODS)</label>
+                        <select id="hypo-risk" onchange="calculateHypo()">
+                            <option value="low">Không có (Tốc độ tăng mục tiêu: 8 mmol/L/24h)</option>
+                            <option value="high">Có (Hạ K+ máu đi kèm, xơ gan, nghiện rượu, suy dinh dưỡng nặng) (Mục tiêu: 6 mmol/L/24h)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hypo-fluid">Dịch truyền dự kiến bổ sung Na+</label>
+                        <select id="hypo-fluid" onchange="calculateHypo()">
+                            <option value="3.0">NaCl ưu trương 3.0% (513 mmol/L)</option>
+                            <option value="1.8">NaCl ưu trương 1.8% (308 mmol/L)</option>
+                            <option value="0.9">NaCl đẳng trương 0.9% (154 mmol/L)</option>
+                            <option value="RL">Ringer Lactate (130 mmol/L)</option>
+                        </select>
+                    </div>
+
+                    <!-- Định hướng nguyên nhân hạ Natri -->
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-stethoscope text-teal-600"></i> Định hướng nguyên nhân gây hạ Natri
+                        </h3>
+                        
+                        <div class="form-group mb-3">
+                            <label for="hypo-ecf">Đánh giá thể tích dịch ngoại bào (ECF)</label>
+                            <select id="hypo-ecf" onchange="suggestHypoCauses()">
+                                <option value="euvolemic">Đẳng thể tích ECF (Không phù, không mất dịch lâm sàng)</option>
+                                <option value="hypovolemic">Giảm thể tích ECF (Huyết áp thấp, da khô, dấu véo da (+))</option>
+                                <option value="hypervolemic">Tăng thể tích ECF (Phù chi, cổ trướng, ran ẩm phổi)</option>
+                            </select>
+                        </div>
+
+                        <p class="text-xs text-slate-500 mb-3">Các yếu tố nguy cơ hoặc triệu chứng thực tế:</p>
+                        <div class="space-y-2">
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hypo-cause-thiazide" onchange="suggestHypoCauses()" class="mt-0.5 rounded text-teal-600 focus:ring-teal-500">
+                                <span>Đang dùng thuốc lợi tiểu Thiazide</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hypo-cause-gi" onchange="suggestHypoCauses()" class="mt-0.5 rounded text-teal-600 focus:ring-teal-500">
+                                <span>Có nôn ói nhiều hoặc tiêu chảy cấp kéo dài</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hypo-cause-siadh" onchange="suggestHypoCauses()" class="mt-0.5 rounded text-teal-600 focus:ring-teal-500">
+                                <span>Có u bướu (phổi/não), chấn thương não, hoặc nhiễm trùng phổi (SIADH)</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hypo-cause-organ" onchange="suggestHypoCauses()" class="mt-0.5 rounded text-teal-600 focus:ring-teal-500">
+                                <span>Bị suy tim nặng, xơ gan Child-Pugh B/C hoặc hội chứng thận hư</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải: Kết quả xử trí và định hướng nguyên nhân -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Khuyến cáo xử trí -->
+                    <div id="hypo-result-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                            <h2 class="text-lg font-extrabold text-teal-800 flex items-center gap-2">
+                                <i class="fa-solid fa-notes-medical text-teal-600"></i> 2. Phác đồ xử trí &amp; Lệnh truyền dịch
+                            </h2>
+                            <span id="hypo-severity" class="px-2.5 py-1 text-xs font-black rounded-lg uppercase">Hạ Na+ Nặng</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Đánh giá mức độ & TBW -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                                <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                                    <span class="text-slate-500 font-semibold block">Tổng nước cơ thể (TBW):</span>
+                                    <strong class="text-base text-slate-700"><span id="hypo-tbw-val">36.0</span> Lít</strong>
+                                </div>
+                                <div class="bg-teal-50 border border-teal-100 p-3 rounded-lg">
+                                    <span class="text-teal-700 font-semibold block">Hiệu ứng của 1L dịch:</span>
+                                    <strong class="text-base text-teal-800">+<span id="hypo-delta-val">9.68</span> mmol/L Na+</strong>
+                                </div>
+                                <div class="bg-sky-50 border border-sky-100 p-3 rounded-lg">
+                                    <span class="text-sky-700 font-semibold block">Mục tiêu tăng (24h):</span>
+                                    <strong class="text-base text-sky-800"><span id="hypo-target-val">8</span> mmol/L</strong>
+                                </div>
+                            </div>
+
+                            <!-- Triệu chứng cấp cứu khẩn cấp -->
+                            <div id="hypo-urgent-block" class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl space-y-2 hidden">
+                                <strong class="text-red-700 font-extrabold text-sm flex items-center gap-1">
+                                    <i class="fa-solid fa-triangle-exclamation animate-bounce"></i> XỬ TRÍ CẤP CỨU PHÙ NÃO DO HẠ NATRI NẶNG:
+                                </strong>
+                                <p class="text-xs text-slate-700 leading-relaxed">
+                                    Bệnh nhân có triệu chứng thần kinh nghiêm trọng (hôn mê, co giật). Đây là cấp cứu tối khẩn cấp do nguy cơ phù não. Chỉ định ngay:
+                                    <strong class="block text-red-600 mt-1">• Truyền tĩnh mạch nhanh 150 ml NaCl 3% (Saline ưu trương) trong 20 phút.</strong>
+                                    • Kiểm tra lại Natri máu sau 20 phút. Nếu triệu chứng chưa cải thiện, truyền tiếp <strong>150 ml NaCl 3% lần 2 trong 20 phút</strong> (Tối đa 2 lần lặp lại hoặc tăng đạt 5 mmol/L).
+                                </p>
+                            </div>
+
+                            <!-- Chi tiết tốc độ truyền dịch 24h -->
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2 text-xs md:text-sm">
+                                <h3 class="font-extrabold text-slate-700 flex items-center gap-1">
+                                    <i class="fa-solid fa-flask text-teal-600"></i> Kế hoạch duy trì dịch truyền trong 24 giờ đầu (Adrogue-Madias):
+                                </h3>
+                                <ul class="space-y-1.5 text-slate-600 list-disc pl-5">
+                                    <li>Dịch truyền sử dụng: <strong class="text-slate-800" id="hypo-recipe-fluid">NaCl 3%</strong>.</li>
+                                    <li>Tổng thể tích cần truyền (24h): <strong class="text-teal-700 text-base" id="hypo-recipe-vol">826</strong> mL.</li>
+                                    <li class="bg-teal-50 p-2 border-l-2 border-teal-500 rounded-r">
+                                        <strong>Tốc độ truyền tĩnh mạch gợi ý:</strong> <strong class="text-rose-600 text-base" id="hypo-recipe-rate">34</strong> mL/giờ <span class="text-slate-500 font-semibold">(≈ <strong class="text-rose-600" id="hypo-recipe-drops">11</strong> giọt/phút)</span>.
+                                    </li>
+                                    <li><strong>Giới hạn an toàn tuyệt đối:</strong> Không tăng quá <strong>10 mmol/L</strong> trong 24h đầu để phòng tránh <strong>Hội chứng ODS</strong>.</li>
+                                </ul>
+                            </div>
+
+                            <!-- Cảnh báo Overcorrection -->
+                            <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-lg text-xs space-y-1">
+                                <div class="font-bold flex items-center gap-1.5 text-amber-800">
+                                    <i class="fa-solid fa-shield-halved text-base"></i> BIỆN PHÁP PHÒNG ODS KHI ĐIỀU CHỈNH QUÁ MỨC (OVERCORRECTION):
+                                </div>
+                                <p class="text-slate-700 leading-relaxed">
+                                    Nếu tốc độ tăng natri thực tế vượt quá <strong>10 mmol/L</strong> trong 24 giờ đầu, phải lập tức can thiệp giảm natri máu: Ngưng dịch ưu trương, truyền nước cất <strong>Dextrose 5% 10 ml/kg</strong> trong 1 giờ, có thể kết hợp tiêm tĩnh mạch <strong>Desmopressin 2 µg</strong> để kéo natri hạ về ngưỡng an toàn.
+                                </p>
+                            </div>
+
+                            <!-- Hướng dẫn tự pha dịch truyền thay thế -->
+                            <div id="hypo-compounding-card" class="bg-teal-50/50 border border-teal-100 p-4 rounded-xl text-xs space-y-2 hidden">
+                                <!-- Sẽ được điền động bằng JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gợi ý nguyên nhân & xét nghiệm đề xuất -->
+                    <div id="hypo-cause-result-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-lg font-extrabold text-slate-800 border-b border-slate-100 pb-4 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass-chart text-sky-500"></i> Định hướng nguyên nhân &amp; Đề xuất xét nghiệm
+                        </h2>
+                        
+                        <div id="hypo-cause-output" class="text-xs md:text-sm text-slate-700 space-y-4">
+                            <!-- Sẽ được điền bằng JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==================== TAB 2: TĂNG NATRI MÁU ==================== -->
+        <div id="tab-hyper" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Cột trái: Nhập thông số lâm sàng -->
+                <div class="lg:col-span-5 space-y-5 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-extrabold text-rose-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question text-rose-600"></i> 1. Thông số lâm sàng
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label for="hyper-gender">Thể trạng &amp; Hệ số nhân trắc (TBW)</label>
+                        <select id="hyper-gender" onchange="calculateHyper()">
+                            <option value="male_adult">Nam trưởng thành (Hệ số 0.6)</option>
+                            <option value="female_adult">Nữ trưởng thành (Hệ số 0.5)</option>
+                            <option value="male_elderly">Nam cao tuổi / Suy kiệt (Hệ số 0.5)</option>
+                            <option value="female_elderly">Nữ cao tuổi / Suy kiệt (Hệ số 0.45)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="hyper-weight">Cân nặng (kg)</label>
+                            <input type="number" id="hyper-weight" value="60" min="20" max="200" oninput="calculateHyper()">
+                        </div>
+                        <div class="form-group">
+                            <label for="hyper-na">Na+ hiện tại (mmol/L)</label>
+                            <input type="number" id="hyper-na" value="160" min="146" max="190" oninput="calculateHyper()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hyper-duration">Thời gian diễn tiến rối loạn</label>
+                        <select id="hyper-duration" onchange="calculateHyper()">
+                            <option value="chronic">Mạn tính hoặc không rõ thời gian (≥ 48h) - Hạ chậm tránh phù não</option>
+                            <option value="acute">Cấp tính (< 48h) - Cho phép điều chỉnh nhanh hơn</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hyper-fluid">Dịch truyền nhược trương lựa chọn</label>
+                        <select id="hyper-fluid" onchange="calculateHyper()">
+                            <option value="d5w">Glucose 5% (0 mmol/L Na+) - Bù nước tự do hoàn toàn</option>
+                            <option value="half_ns">NaCl 0.45% / Half-normal Saline (77 mmol/L Na+)</option>
+                            <option value="quarter_ns">NaCl 0.2% (31 mmol/L Na+)</option>
+                        </select>
+                    </div>
+
+                    <!-- Định hướng nguyên nhân tăng Natri -->
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-stethoscope text-rose-600"></i> Định hướng nguyên nhân gây tăng Natri
+                        </h3>
+                        <p class="text-xs text-slate-500 mb-3">Tích chọn các đặc điểm lâm sàng thực tế của bệnh nhân:</p>
+                        
+                        <div class="space-y-2">
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hyper-cause-di" onchange="suggestHyperCauses()" class="mt-0.5 rounded text-rose-600 focus:ring-rose-500">
+                                <span>Tiểu nhiều (&gt; 3 Lít/ngày), nước tiểu rất nhạt màu (Đái tháo nhạt)</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hyper-cause-dehydration" onchange="suggestHyperCauses()" class="mt-0.5 rounded text-rose-600 focus:ring-rose-500">
+                                <span>Mất nước không bù đủ (Thở máy, sốt cao kéo dài, bỏng diện rộng, nôn ói mất dịch)</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer">
+                                <input type="checkbox" id="hyper-cause-iatrogenic" onchange="suggestHyperCauses()" class="mt-0.5 rounded text-rose-600 focus:ring-rose-500">
+                                <span>Được truyền nhiều dịch NaCl 3% hoặc Sodium Bicarbonate ưu trương trước đó</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột phải: Kết quả xử trí và định hướng nguyên nhân -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Kết quả tính toán dịch bù -->
+                    <div id="hyper-result-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                            <h2 class="text-lg font-extrabold text-rose-800 flex items-center gap-2">
+                                <i class="fa-solid fa-notes-medical text-rose-600"></i> 2. Liệu pháp bù nước tự do
+                            </h2>
+                            <span id="hyper-severity" class="px-2.5 py-1 text-xs font-black rounded-lg uppercase">Tăng Na+ Nặng</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Đánh giá mức độ, TBW & Free Water Deficit -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                                <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                                    <span class="text-slate-500 font-semibold block">Tổng nước cơ thể (TBW):</span>
+                                    <strong class="text-base text-slate-700"><span id="hyper-tbw-val">36.0</span> Lít</strong>
+                                </div>
+                                <div class="bg-rose-50 border border-rose-100 p-3 rounded-lg">
+                                    <span class="text-rose-700 font-semibold block">Thiếu hụt nước tự do:</span>
+                                    <strong class="text-base text-rose-800"><span id="hyper-deficit-val">5.14</span> Lít</strong>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg">
+                                    <span class="text-blue-700 font-semibold block">Hiệu ứng hạ của 1L dịch:</span>
+                                    <strong class="text-base text-blue-800">-<span id="hyper-delta-val">4.32</span> mmol/L Na+</strong>
+                                </div>
+                            </div>
+
+                            <!-- Khuyến cáo xử trí huyết động khẩn cấp -->
+                            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl space-y-1.5">
+                                <strong class="text-amber-800 font-extrabold text-xs flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-exclamation"></i> BƯỚC 1: ĐÁNH GIÁ VÀ PHỤC HỒI HUYẾT ĐỘNG TRƯỚC:
+                                </strong>
+                                <p class="text-xs text-slate-700 leading-relaxed">
+                                    Nếu bệnh nhân có tụt huyết áp hoặc sốc giảm thể tích: <strong>BẮT BUỘC bù dịch đẳng trương (NaCl 0.9%) trước</strong> cho đến khi sinh hiệu ổn định, sau đó mới tiến hành truyền dịch nhược trương để hạ natri máu.
+                                </p>
+                            </div>
+
+                            <!-- Kế hoạch dịch truyền 24h -->
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2 text-xs md:text-sm">
+                                <h3 class="font-extrabold text-slate-700 flex items-center gap-1">
+                                    <i class="fa-solid fa-flask text-rose-600"></i> Kế hoạch truyền dịch nhược trương trong 24 giờ đầu:
+                                </h3>
+                                <ul class="space-y-1.5 text-slate-600 list-disc pl-5">
+                                    <li>Dịch truyền nhược trương: <strong class="text-slate-800" id="hyper-recipe-fluid">Glucose 5%</strong>.</li>
+                                    <li>Mục tiêu hạ Natri máu an toàn trong 24h: <strong class="text-rose-700" id="hyper-max-drop">10</strong> mmol/L.</li>
+                                    <li>Thể tích dịch nhược trương cần truyền (24h): <strong class="text-sky-700 text-base" id="hyper-recipe-vol">2315</strong> mL.</li>
+                                    <li class="bg-rose-50 p-2 border-l-2 border-rose-500 rounded-r">
+                                        <strong>Tốc độ truyền tĩnh mạch gợi ý:</strong> <strong class="text-rose-700 text-lg" id="hyper-recipe-rate">96</strong> mL/giờ.
+                                    </li>
+                                    <li class="text-[11px] text-slate-500 italic">• Tốc độ trên chưa bao gồm lượng dịch mất liên tục (nước tiểu, sốt, thở nhanh). Cần đo lại điện giải mỗi 4 giờ để điều chỉnh tốc độ dịch truyền.</li>
+                                </ul>
+                            </div>
+
+                            <!-- Cảnh báo phù não -->
+                            <div id="hyper-safety-alert" class="bg-rose-100 border border-rose-200 text-rose-800 p-3 rounded-lg text-xs font-bold hidden flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-700 text-lg shrink-0"></i>
+                                <span>CẢNH BÁO TỐC ĐỘ: Tăng natri máu mạn tính (≥48h) nếu hạ quá nhanh (&gt;0.5 mmol/L/giờ hoặc &gt;10 mmol/L/ngày) sẽ gây phù não nặng dẫn đến co giật và hôn mê. BẮT BUỘC hạ chậm và kiểm tra natri máu thường xuyên!</span>
+                            </div>
+
+                            <!-- Hướng dẫn tự pha dịch truyền thay thế -->
+                            <div id="hyper-compounding-card" class="bg-rose-50/50 border border-rose-100 p-4 rounded-xl text-xs space-y-2 hidden">
+                                <!-- Sẽ được điền động bằng JS -->
+                            </div>
+
+                            <!-- Copyable Y lệnh y khoa -->
+                            <div class="bg-slate-100 p-4 rounded-xl border border-slate-200">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold text-slate-700 flex items-center gap-1">
+                                        <i class="fa-solid fa-pen-clip text-slate-500"></i> Y lệnh y khoa tham khảo
+                                    </span>
+                                    <button onclick="copyText('hyper-order')" class="text-rose-600 hover:text-rose-800 text-xs font-semibold flex items-center gap-1 transition">
+                                        <i class="fa-regular fa-copy"></i> Sao chép
+                                    </button>
+                                </div>
+                                <textarea id="hyper-order" readonly class="w-full h-16 px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono bg-white focus:outline-none custom-scrollbar">Glucose 5% truyền tĩnh mạch tốc độ 96 mL/giờ. Kiểm tra lại Natri máu sau mỗi 4 giờ.</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gợi ý nguyên nhân & xét nghiệm đề xuất -->
+                    <div id="hyper-cause-result-box" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-lg font-extrabold text-slate-800 border-b border-slate-100 pb-4 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass-chart text-sky-500"></i> Định hướng nguyên nhân &amp; Đề xuất xét nghiệm
+                        </h2>
+                        
+                        <div id="hyper-cause-output" class="text-xs md:text-sm text-slate-700 space-y-4">
+                            <!-- Sẽ được điền bằng JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==================== TAB 3: CẨM NANG & CƠ CHẾ Y HỌC ==================== -->
+        <div id="tab-info" class="hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-8">
+                <!-- Giới thiệu -->
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 mb-3 border-b border-slate-100 pb-4">
+                        <i class="fa-solid fa-circle-info text-sky-500 mr-2"></i> RỐI LOẠN NATRI MÁU: CƠ CHẾ BỆNH SINH VÀ LÂM SÀNG
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">
+                        Rối loạn natri máu (bao gồm hạ và tăng natri máu) là những rối loạn điện giải và cân bằng dịch thường gặp nhất trong thực hành lâm sàng và hồi sức cấp cứu. Các tình trạng này phản ánh sự mất cân bằng về thể tích nước và natri, đe dọa trực tiếp đến tính mạng thông qua các biến chứng thần kinh trung ương nghiêm trọng (phù não hoặc hủy myelin thẩm thấu).
+                    </p>
+                </div>
+
+                <!-- 2 Cột cơ chế -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Hạ Natri -->
+                    <div class="bg-teal-50/40 border border-teal-100 rounded-xl p-5 space-y-3">
+                        <h3 class="font-extrabold text-teal-800 flex items-center gap-1.5 border-b border-teal-100 pb-2">
+                            <i class="fa-solid fa-arrow-trend-down"></i> Hạ Natri máu (&lt; 135 mmol/L)
+                        </h3>
+                        <p class="text-xs text-slate-700 leading-relaxed text-justify">
+                            Hạ natri máu thực sự (nhược trương) phản ánh sự dư thừa nước tương đối so với tổng lượng natri và kali của cơ thể, thường liên quan đến sự bài tiết không thích hợp của hormone chống bài niệu (AVP/ADH).
+                        </p>
+                        <p class="text-xs text-slate-700 leading-relaxed text-justify">
+                            Khi áp lực thẩm thấu ngoại bào giảm đột ngột (hạ natri máu cấp), nước dịch chuyển vào tế bào não gây phù tế bào não (phù não). Để đáp ứng, não bộ đẩy các ion ra ngoài để tự cân bằng áp lực thẩm thấu trong vòng 24-48 giờ. Do đó, nếu ta tăng natri máu quá nhanh ở bệnh nhân hạ natri mạn tính, nước bị rút ồ ạt ra ngoài gây teo tế bào não và phá hủy bao myelin (Hội chứng hủy myelin do thẩm thấu - ODS).
+                        </p>
+                    </div>
+
+                    <!-- Tăng Natri -->
+                    <div class="bg-rose-50/40 border border-rose-100 rounded-xl p-5 space-y-3">
+                        <h3 class="font-extrabold text-rose-800 flex items-center gap-1.5 border-b border-rose-100 pb-2">
+                            <i class="fa-solid fa-arrow-trend-up"></i> Tăng Natri máu (&gt; 145 mmol/L)
+                        </h3>
+                        <p class="text-xs text-slate-700 leading-relaxed text-justify">
+                            Tăng natri máu luôn phản ánh trạng thái thiếu nước tự do (free water) tương đối so với tổng lượng natri của cơ thể. 
+                        </p>
+                        <p class="text-xs text-slate-700 leading-relaxed text-justify">
+                            Sự gia tăng áp lực thẩm thấu ngoại bào rút nước từ tế bào não ra ngoài, gây teo tế bào não. Nếu teo não cấp tính, nó có thể kéo căng các tĩnh mạch gây xuất huyết não hoặc huyết khối xoang tĩnh mạch. Ngược lại, não thích nghi bằng cách tích lũy các chất thẩm thấu hữu cơ để giữ nước lại. Nếu ta truyền dịch nhược trương quá nhanh ở tăng natri mạn tính (&gt;48h), nước đi ồ ạt vào tế bào não gây phù não nghiêm trọng.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Phác đồ can thiệp cụ thể từ y văn -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4 text-xs md:text-sm text-slate-700">
+                    <h3 class="font-extrabold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-2">
+                        <i class="fa-solid fa-scale-balanced text-indigo-500"></i> HƯỚNG DẪN XỬ TRÍ LÂM SÀNG QUAN TRỌNG
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <strong class="text-indigo-800 block">1. Hạ Natri Máu có triệu chứng nặng:</strong>
+                            <p class="leading-relaxed text-justify text-xs">
+                                Việc điều trị cấp cứu phù não do hạ natri máu nặng dựa vào <strong>mức độ triệu chứng thần kinh</strong> (co giật, hôn mê) chứ không dựa vào con số natri máu.
+                                <strong>Phác đồ:</strong> Truyền ngay bolus <strong>150 ml NaCl 3%</strong> trong 20 phút. Đo lại natri sau 20 phút. Có thể lặp lại tối đa 2 lần nếu triệu chứng chưa cải thiện. Giới hạn tăng natri trong 24 giờ đầu là <strong>≤10 mmol/L</strong> (hoặc ≤6 mmol/L ở bệnh nhân nguy cơ cao bị ODS).
+                            </p>
+                        </div>
+                        <div class="space-y-2">
+                            <strong class="text-indigo-800 block">2. Tăng Natri Máu mạn tính:</strong>
+                            <p class="leading-relaxed text-justify text-xs">
+                                Đối với tăng natri mạn tính (≥48 giờ), việc hạ natri quá nhanh là chống chỉ định do nguy cơ phù não. Tốc độ hạ natri tối đa là <strong>≤0.5 mmol/L/giờ</strong> và tổng giảm không quá <strong>10 mmol/L</strong> trong ngày đầu tiên.
+                                Ưu tiên bù nước tự do qua đường tiêu hóa (đường uống hoặc bơm qua sonde) bằng nước chín vì đây là đường bù an toàn nhất cho tế bào não.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tài liệu tham khảo -->
+                <div class="border-t border-slate-100 pt-6">
+                    <h3 class="text-sm font-bold text-slate-800 mb-3">Tài Liệu Tham Khảo Y Khoa Chứng Cứ:</h3>
+                    <ul class="list-decimal pl-5 space-y-1.5 text-xs text-slate-500">
+                        <li>Spasovski G, et al. Clinical practice guideline on diagnosis and treatment of hyponatraemia. <em>Eur J Endocrinol</em>. 2014.</li>
+                        <li>Tomkins M, et al. Diagnosis and treatment of hypernatremia. <em>Best Pract Res Clin Endocrinol Metab</em>. 2026.</li>
+                        <li>Adrogue HJ, Madias NE. Hyponatremia &amp; Hypernatremia. <em>The New England Journal of Medicine</em>. 2000.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t-4 border-teal-600 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div>
+                <p class="font-bold text-white mb-1"><i class="fa-solid fa-staff-snake text-teal-500 mr-2"></i> OncoPortal &copy; 2026</p>
+                <p class="text-xs">Công cụ hỗ trợ nội bộ. Vui lòng đối chiếu với thực tế lâm sàng.</p>
+            </div>
+            <div class="flex gap-4 text-xs">
+                <a href="#" class="hover:text-white transition">Hỗ trợ kỹ thuật</a>
+                <a href="#" class="hover:text-white transition">Báo cáo lỗi</a>
+                <a href="#" class="hover:text-white transition">Bảo mật thông tin</a>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <!-- JavaScript Logic -->
+    <script>
+        // HÀM CHUYỂN TAB
+        function switchTab(tabName) {
+            const tabs = ['hypo', 'hyper', 'info'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}-btn`).className = "py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 border-transparent text-slate-500 hover:text-slate-700 transition flex items-center gap-2";
+            });
+
+            // Hiển thị tab đang chọn
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const btn = document.getElementById(`tab-${tabName}-btn`);
+            
+            if (tabName === 'hypo') {
+                btn.className = "py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 tab-active tab-hypo-active flex items-center gap-2";
+                calculateHypo();
+            } else if (tabName === 'hyper') {
+                btn.className = "py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 tab-active tab-hyper-active flex items-center gap-2";
+                calculateHyper();
+            } else {
+                btn.className = "py-4 px-3 md:px-6 font-bold text-sm md:text-base border-b-4 tab-active tab-info-active flex items-center gap-2";
+            }
+
+            // Cập nhật URL hash
+            window.location.hash = tabName;
+        }
+
+
+
+        // ==================== TÍNH TOÁN HẠ NATRI ====================
+        function calculateHypo() {
+            const gender = document.getElementById('hypo-gender').value;
+            const weight = parseFloat(document.getElementById('hypo-weight').value) || 0;
+            const currentNa = parseFloat(document.getElementById('hypo-na').value) || 0;
+            const symptoms = document.getElementById('hypo-symptoms').value;
+            const risk = document.getElementById('hypo-risk').value;
+            const fluid = document.getElementById('hypo-fluid').value;
+
+            if (weight <= 0 || currentNa <= 0) return;
+
+            // 1. Tính toán nước cơ thể TBW
+            let factor = 0.6;
+            if (gender === 'male_adult') factor = 0.6;
+            else if (gender === 'female_adult') factor = 0.5;
+            else if (gender === 'male_elderly') factor = 0.5;
+            else if (gender === 'female_elderly') factor = 0.45;
+
+            const tbw = weight * factor;
+            document.getElementById('hypo-tbw-val').innerText = tbw.toFixed(1);
+
+            // 2. Định nghĩa nồng độ dịch truyền
+            let infNa = 154; // mặc định 0.9%
+            let fluidName = "NaCl 0.9%";
+            if (fluid === '3.0') {
+                infNa = 513;
+                fluidName = "NaCl 3.0%";
+            } else if (fluid === '1.8') {
+                infNa = 308;
+                fluidName = "NaCl 1.8%";
+            } else if (fluid === 'RL') {
+                infNa = 130;
+                fluidName = "Ringer Lactate";
+            }
+
+            // 3. Tính Delta Na+ cho 1 Lít dịch theo Adrogue-Madias
+            const deltaNa = (infNa - currentNa) / (tbw + 1);
+            document.getElementById('hypo-delta-val').innerText = deltaNa.toFixed(2);
+
+            // 4. Mục tiêu tăng Na+ an toàn
+            let targetChange = (risk === 'high') ? 6 : 8;
+            document.getElementById('hypo-target-val').innerText = targetChange;
+
+            // 5. Tính toán thể tích truyền 24h
+            const recipeFluidEl = document.getElementById('hypo-recipe-fluid');
+            const recipeVolEl = document.getElementById('hypo-recipe-vol');
+            const recipeRateEl = document.getElementById('hypo-recipe-rate');
+            const recipeDropsEl = document.getElementById('hypo-recipe-drops');
+
+            recipeFluidEl.innerText = fluidName;
+
+            if (deltaNa > 0) {
+                let requiredVolumeLitres = targetChange / deltaNa;
+                let requiredVolumeMl = Math.round(requiredVolumeLitres * 1000);
+                let pumpRate = Math.round(requiredVolumeMl / 24);
+                let dropRate = Math.round((pumpRate * 20) / 60);
+
+                recipeVolEl.innerText = requiredVolumeMl;
+                recipeRateEl.innerText = pumpRate;
+                recipeDropsEl.innerText = dropRate;
+            } else {
+                recipeVolEl.innerText = "0 (Dịch có Na+ nhỏ hơn Na+ máu)";
+                recipeRateEl.innerText = "0";
+                recipeDropsEl.innerText = "0";
+            }
+
+            // 6. Hiển thị khối cấp cứu khẩn cấp nếu có triệu chứng nặng
+            const urgentBlock = document.getElementById('hypo-urgent-block');
+            if (symptoms === 'yes') {
+                urgentBlock.classList.remove('hidden');
+            } else {
+                urgentBlock.classList.add('hidden');
+            }
+
+            // Cập nhật thẻ Hướng dẫn tự pha dịch truyền thay thế
+            const compCard = document.getElementById('hypo-compounding-card');
+            if (fluid === '3.0') {
+                compCard.classList.remove('hidden');
+                compCard.innerHTML = `
+                    <div class="font-bold text-teal-800 flex items-center gap-1.5 mb-1 text-xs md:text-sm">
+                        <i class="fa-solid fa-square-plus text-teal-600"></i> HƯỚNG DẪN PHA NaCl 3% (Từ chế phẩm có sẵn):
+                    </div>
+                    <p class="text-slate-700 leading-relaxed text-xs">
+                        Nếu không có sẵn chai pha sẵn, bác sĩ có thể pha chế dung dịch <strong>NaCl 3%</strong> bằng cách trộn <strong>NaCl 10%</strong> và <strong>NaCl 0.9%</strong>:
+                    </p>
+                    <ul class="list-disc pl-5 mt-1 text-slate-600 space-y-1 text-xs">
+                        <li><strong>Cách pha 100 mL:</strong> Trộn 23 mL NaCl 10% + 77 mL NaCl 0.9%.</li>
+                        <li><strong>Cách pha 500 mL:</strong> Trộn 115 mL NaCl 10% + 385 mL NaCl 0.9%. (Trên lâm sàng, có thể rút bỏ 115 mL từ chai NaCl 0.9% 500 mL, rồi bơm thêm 11.5 ống NaCl 10% loại 10 mL vào).</li>
+                    </ul>
+                `;
+            } else if (fluid === '1.8') {
+                compCard.classList.remove('hidden');
+                compCard.innerHTML = `
+                    <div class="font-bold text-teal-800 flex items-center gap-1.5 mb-1 text-xs md:text-sm">
+                        <i class="fa-solid fa-square-plus text-teal-600"></i> HƯỚNG DẪN PHA NaCl 1.8% (Từ chế phẩm có sẵn):
+                    </div>
+                    <p class="text-slate-700 leading-relaxed text-xs">
+                        Nếu không có sẵn chai pha sẵn, bác sĩ có thể pha chế dung dịch <strong>NaCl 1.8%</strong> bằng cách trộn <strong>NaCl 10%</strong> và <strong>NaCl 0.9%</strong>:
+                    </p>
+                    <ul class="list-disc pl-5 mt-1 text-slate-600 space-y-1 text-xs">
+                        <li><strong>Cách pha 100 mL:</strong> Trộn 10 mL NaCl 10% + 90 mL NaCl 0.9%.</li>
+                        <li><strong>Cách pha 500 mL:</strong> Trộn 50 mL NaCl 10% + 450 mL NaCl 0.9%. (Trên lâm sàng, có thể rút bỏ 50 mL từ chai NaCl 0.9% 500 mL, rồi bơm thêm 5 ống NaCl 10% loại 10 mL vào).</li>
+                    </ul>
+                `;
+            } else {
+                compCard.classList.add('hidden');
+            }
+
+            // 7. Cập nhật phân mức độ nặng sinh hóa
+            const sevBadge = document.getElementById('hypo-severity');
+            let severityText = "Hạ Na+ Nhẹ";
+            let severityClass = "bg-sky-100 text-sky-700 border border-sky-200";
+
+            if (currentNa < 125 || symptoms === 'yes') {
+                severityText = "Hạ Na+ Nặng/Sâu";
+                severityClass = "bg-rose-100 text-rose-700 border border-rose-200 animate-pulse";
+            } else if (currentNa >= 125 && currentNa < 130) {
+                severityText = "Hạ Na+ Trung Bình";
+                severityClass = "bg-amber-100 text-amber-700 border border-amber-200";
+            }
+            sevBadge.innerText = severityText;
+            sevBadge.className = `px-2.5 py-1 text-xs font-black rounded-lg uppercase ${severityClass}`;
+
+            suggestHypoCauses();
+        }
+
+        // Định hướng nguyên nhân hạ Natri
+        function suggestHypoCauses() {
+            const ecf = document.getElementById('hypo-ecf').value;
+            const isThiazide = document.getElementById('hypo-cause-thiazide').checked;
+            const isGI = document.getElementById('hypo-cause-gi').checked;
+            const isSiadh = document.getElementById('hypo-cause-siadh').checked;
+            const isOrgan = document.getElementById('hypo-cause-organ').checked;
+
+            const outputEl = document.getElementById('hypo-cause-output');
+            let html = "";
+
+            if (ecf === 'euvolemic' && !isThiazide && !isGI && !isSiadh && !isOrgan) {
+                html = `
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-circle-info text-sky-500"></i> Chưa chọn đặc điểm lâm sàng:</strong>
+                        <p class="mb-2">Vui lòng tích chọn các biểu hiện ở cột trái và đánh giá lượng dịch ngoại bào (ECF) để nhận định hướng chẩn đoán chi tiết.</p>
+                        <strong class="text-slate-800 block mt-3 mb-1">Các xét nghiệm vàng định hướng nguyên nhân:</strong>
+                        <ul class="list-disc pl-5 space-y-1 text-slate-600">
+                            <li><strong>Áp lực thẩm thấu (ALTT) niệu</strong>: Phân biệt thận thải nước tự do tốt (&lt; 100 mOsm/kg) hay giảm thải (&gt; 100 mOsm/kg).</li>
+                            <li><strong>Natri niệu bất kỳ</strong>: Phân biệt mất muối qua thận (&gt; 20-30 mmol/L) hay ngoài thận (&lt; 20 mmol/L).</li>
+                            <li><strong>TSH, Cortisol máu sáng</strong>: Loại trừ suy giáp, suy tuyến thượng thận trước khi chẩn đoán SIADH.</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                html += `<div class="space-y-3">`;
+
+                if (ecf === 'hypovolemic') {
+                    html += `
+                        <div class="p-3 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
+                            <strong class="text-amber-800 block text-xs md:text-sm"><i class="fa-solid fa-droplet-slash mr-1"></i> Hạ Natri kèm giảm thể tích ECF (Mất dịch và muối):</strong>
+                            <p class="text-slate-600 mt-0.5">Bệnh nhân mất cả muối và nước, nhưng lượng muối mất nhiều hơn. Cơ thể phản ứng bằng cách tăng tiết ADH giữ nước tự do để duy trì huyết áp, gây hạ natri thứ phát. Khuyến cáo: Bù dịch đẳng trương NaCl 0.9% để phục hồi thể tích tuần hoàn; khi thể tích phục hồi, kích thích tiết ADH sẽ biến mất và thận bắt đầu thải nước tự do rất nhanh.</p>
+                        </div>
+                    `;
+                }
+
+                if (ecf === 'euvolemic') {
+                    html += `
+                        <div class="p-3 bg-teal-50 border-l-4 border-teal-500 rounded-r-lg">
+                            <strong class="text-teal-800 block text-xs md:text-sm"><i class="fa-solid fa-scale-balanced mr-1"></i> Hạ Natri kèm đẳng thể tích ECF:</strong>
+                            <p class="text-slate-600 mt-0.5">Lượng nước trong cơ thể tăng nhẹ nhưng không gây phù. Đây là cơ chế đặc trưng của <strong>Hội chứng SIADH</strong> hoặc suy giáp, suy vỏ thượng thận. Khuyến cáo: Hạn chế dịch uống tối đa là phương pháp điều trị hàng đầu.</p>
+                        </div>
+                    `;
+                }
+
+                if (ecf === 'hypervolemic') {
+                    html += `
+                        <div class="p-3 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg">
+                            <strong class="text-rose-800 block text-xs md:text-sm"><i class="fa-solid fa-circle-radiation mr-1"></i> Hạ Natri kèm tăng thể tích ECF (Dư thừa nước vượt trội):</strong>
+                            <p class="text-slate-600 mt-0.5">Thường gặp trong suy tim nặng, xơ gan xơ hóa hoặc hội chứng thận hư. Thể tích tuần hoàn hiệu dụng giảm kích hoạt hệ RAAS và ADH, giữ nước tự do nhiều hơn natri. Khuyến cáo: <strong>Hạn chế dịch uống (&lt;800 - 1000 mL/ngày)</strong> kết hợp với thuốc lợi tiểu quai (Furosemide). Tránh truyền dịch đẳng trương vì sẽ làm nặng thêm tình trạng phù nề.</p>
+                        </div>
+                    `;
+                }
+
+                if (isThiazide) {
+                    html += `
+                        <div class="p-3 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
+                            <strong class="text-amber-800 block text-xs md:text-sm"><i class="fa-solid fa-pills mr-1"></i> Hạ Natri do lợi tiểu Thiazide:</strong>
+                            <p class="text-slate-600 mt-0.5">Thiazide ức chế tái hấp thu muối ở ống lượn xa nhưng không cản trở việc cô đặc nước tiểu ở tủy thận, dẫn đến bài niệu natri vượt trội. Đặc biệt nhạy cảm ở phụ nữ lớn tuổi. Khuyến cáo: <strong>Ngưng ngay lập tức Thiazide</strong>, kiểm tra Kali máu đi kèm.</p>
+                        </div>
+                    `;
+                }
+
+                if (isGI) {
+                    html += `
+                        <div class="p-3 bg-sky-50 border-l-4 border-sky-500 rounded-r-lg">
+                            <strong class="text-sky-800 block text-xs md:text-sm"><i class="fa-solid fa-toilet mr-1"></i> Mất qua tiêu hóa (Nôn, Tiêu chảy):</strong>
+                            <p class="text-slate-600 mt-0.5">Mất dịch nhược trương qua đường tiêu hóa kèm kích thích ADH không thích hợp do giảm thể tích tuần hoàn. Khuyến cáo: Bù dịch đẳng trương NaCl 0.9%, kiểm tra nồng độ natri niệu bất kỳ (thường &lt; 20 mmol/L do thận cố gắng giữ muối).</p>
+                        </div>
+                    `;
+                }
+
+                if (isSiadh) {
+                    html += `
+                        <div class="p-3 bg-purple-50 border-l-4 border-purple-500 rounded-r-lg">
+                            <strong class="text-purple-800 block text-xs md:text-sm"><i class="fa-solid fa-disease mr-1"></i> Nghi ngờ Hội chứng SIADH:</strong>
+                            <p class="text-slate-600 mt-0.5">Bài tiết ADH liên tục bất chấp áp lực thẩm thấu huyết thanh thấp. Gặp trong ung thư phổi tế bào nhỏ, viêm phổi, tai biến mạch máu não hoặc chấn thương sọ não. Khuyến cáo: Hạn chế dịch uống &lt; 1000 mL/ngày. Nếu thất bại, xem xét sử dụng <strong>Urea uống</strong> để tăng thải nước tự do qua thận hoặc ngưng các dịch truyền không cần thiết.</p>
+                        </div>
+                    `;
+                }
+
+                if (isOrgan) {
+                    html += `
+                        <div class="p-3 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                            <strong class="text-red-800 block text-xs md:text-sm"><i class="fa-solid fa-hospital mr-1"></i> Do suy đa cơ quan (Tim/Gan/Thận):</strong>
+                            <p class="text-slate-600 mt-0.5">Giảm cung lượng tim (suy tim) hoặc giãn mạch hệ tạng (xơ gan) kích hoạt receptor áp lực ở xoang cảnh tăng giải phóng ADH thần kinh. Khuyến cáo: Hạn chế dịch và muối nghiêm ngặt. Điều trị tối ưu hóa bệnh lý nền.</p>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            }
+
+            outputEl.innerHTML = html;
+        }
+
+
+        // ==================== TÍNH TOÁN TĂNG NATRI ====================
+        function calculateHyper() {
+            const gender = document.getElementById('hyper-gender').value;
+            const weight = parseFloat(document.getElementById('hyper-weight').value) || 0;
+            const currentNa = parseFloat(document.getElementById('hyper-na').value) || 0;
+            const duration = document.getElementById('hyper-duration').value;
+            const fluid = document.getElementById('hyper-fluid').value;
+
+            if (weight <= 0 || currentNa <= 0) return;
+
+            // 1. Tính toán nước cơ thể TBW
+            let factor = 0.6;
+            if (gender === 'male_adult') factor = 0.6;
+            else if (gender === 'female_adult') factor = 0.5;
+            else if (gender === 'male_elderly') factor = 0.5;
+            else if (gender === 'female_elderly') factor = 0.45;
+
+            const tbw = weight * factor;
+            document.getElementById('hyper-tbw-val').innerText = tbw.toFixed(1);
+
+            // 2. Tính lượng nước tự do thiếu hụt (Free Water Deficit)
+            const deficit = tbw * ((currentNa / 140) - 1);
+            document.getElementById('hyper-deficit-val').innerText = deficit.toFixed(2);
+
+            // 3. Định nghĩa nồng độ dịch nhược trương chọn dùng
+            let infNa = 0; // Glucose 5%
+            let fluidName = "Glucose 5%";
+            if (fluid === 'half_ns') {
+                infNa = 77;
+                fluidName = "NaCl 0.45%";
+            } else if (fluid === 'quarter_ns') {
+                infNa = 31;
+                fluidName = "NaCl 0.2%";
+            }
+
+            // 4. Tính Delta Na+ hạ được trên 1L dịch
+            const deltaNa = (infNa - currentNa) / (tbw + 1);
+            const absoluteDelta = Math.abs(deltaNa);
+            document.getElementById('hyper-delta-val').innerText = absoluteDelta.toFixed(2);
+
+            // 5. Xác định giới hạn hạ Natri trong 24h
+            let targetDrop = (duration === 'acute') ? 12 : 10;
+            document.getElementById('hyper-max-drop').innerText = targetDrop;
+
+            const safetyAlert = document.getElementById('hyper-safety-alert');
+            if (duration === 'chronic') {
+                safetyAlert.classList.remove('hidden');
+            } else {
+                safetyAlert.classList.add('hidden');
+            }
+
+            // 6. Tính toán thể tích dịch nhược trương cần truyền 24h
+            const recipeFluidEl = document.getElementById('hyper-recipe-fluid');
+            const recipeVolEl = document.getElementById('hyper-recipe-vol');
+            const recipeRateEl = document.getElementById('hyper-recipe-rate');
+
+            recipeFluidEl.innerText = fluidName;
+
+            if (absoluteDelta > 0) {
+                let requiredVolumeLitres = targetDrop / absoluteDelta;
+                let requiredVolumeMl = Math.round(requiredVolumeLitres * 1000);
+                let pumpRate = Math.round(requiredVolumeMl / 24);
+
+                recipeVolEl.innerText = requiredVolumeMl;
+                recipeRateEl.innerText = pumpRate;
+            } else {
+                recipeVolEl.innerText = "0";
+                recipeRateEl.innerText = "0";
+            }
+
+            // Cập nhật thẻ Hướng dẫn tự pha dịch truyền thay thế
+            const compCard = document.getElementById('hyper-compounding-card');
+            if (fluid === 'half_ns') {
+                compCard.classList.remove('hidden');
+                compCard.innerHTML = `
+                    <div class="font-bold text-rose-800 flex items-center gap-1.5 mb-1 text-xs md:text-sm">
+                        <i class="fa-solid fa-square-plus text-rose-600"></i> HƯỚNG DẪN PHA NaCl 0.45% (Từ chế phẩm có sẵn):
+                    </div>
+                    <p class="text-slate-700 leading-relaxed text-xs">
+                        Nếu không có sẵn chai pha sẵn, bác sĩ có thể pha chế dung dịch <strong>NaCl 0.45%</strong> bằng cách trộn <strong>NaCl 0.9%</strong> với nước cất hoặc Glucose 5% theo tỉ lệ 1:1:
+                    </p>
+                    <ul class="list-disc pl-5 mt-1 text-slate-600 space-y-1 text-xs">
+                        <li><strong>Cách pha 500 mL:</strong> Pha trộn 250 mL NaCl 0.9% với 250 mL Nước cất pha tiêm (hoặc Glucose 5% 250 mL).</li>
+                    </ul>
+                `;
+            } else if (fluid === 'quarter_ns') {
+                compCard.classList.remove('hidden');
+                compCard.innerHTML = `
+                    <div class="font-bold text-rose-800 flex items-center gap-1.5 mb-1 text-xs md:text-sm">
+                        <i class="fa-solid fa-square-plus text-rose-600"></i> HƯỜNG DẪN PHA NaCl 0.2% (Từ chế phẩm có sẵn):
+                    </div>
+                    <p class="text-slate-700 leading-relaxed text-xs">
+                        Nếu không có sẵn chai pha sẵn, bác sĩ có thể pha chế dung dịch <strong>NaCl 0.2%</strong> bằng cách trộn <strong>NaCl 0.9%</strong> với nước cất hoặc Glucose 5% theo tỉ lệ 1:3.5:
+                    </p>
+                    <ul class="list-disc pl-5 mt-1 text-slate-600 space-y-1 text-xs">
+                        <li><strong>Cách pha 500 mL:</strong> Trộn 111 mL NaCl 0.9% và 389 mL Nước cất pha tiêm (hoặc Glucose 5%).</li>
+                    </ul>
+                `;
+            } else {
+                compCard.classList.add('hidden');
+            }
+
+            // 7. Cập nhật phân cấp mức độ tăng Natri sinh hóa
+            const sevBadge = document.getElementById('hyper-severity');
+            let severityText = "Tăng Na+ Nhẹ";
+            let severityClass = "bg-sky-100 text-sky-700 border border-sky-200";
+
+            if (currentNa > 155) {
+                severityText = "Tăng Na+ Nặng";
+                severityClass = "bg-rose-100 text-rose-700 border border-rose-200 animate-pulse";
+            } else if (currentNa >= 150 && currentNa <= 155) {
+                severityText = "Tăng Na+ Trung Bình";
+                severityClass = "bg-amber-100 text-amber-700 border border-amber-200";
+            }
+            sevBadge.innerText = severityText;
+            sevBadge.className = `px-2.5 py-1 text-xs font-black rounded-lg uppercase ${severityClass}`;
+
+            suggestHyperCauses();
+        }
+
+        // Định hướng nguyên nhân tăng Natri
+        function suggestHyperCauses() {
+            const isDI = document.getElementById('hyper-cause-di').checked;
+            const isDehydration = document.getElementById('hyper-cause-dehydration').checked;
+            const isIatrogenic = document.getElementById('hyper-cause-iatrogenic').checked;
+
+            const outputEl = document.getElementById('hyper-cause-output');
+            let html = "";
+
+            if (!isDI && !isDehydration && !isIatrogenic) {
+                html = `
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <strong class="text-slate-800 block mb-1"><i class="fa-solid fa-circle-info text-rose-500"></i> Chưa chọn đặc điểm lâm sàng:</strong>
+                        <p class="mb-2">Vui lòng tích chọn các biểu hiện ở cột trái để nhận định hướng nguyên nhân chi tiết.</p>
+                        <strong class="text-slate-800 block mt-3 mb-1">Xét nghiệm phân biệt Đái tháo nhạt (DI):</strong>
+                        <ul class="list-disc pl-5 space-y-1 text-slate-600">
+                            <li>Đo <strong>Áp lực thẩm thấu niệu</strong>: Nếu áp lực thẩm thấu niệu thấp (&lt; 300 mOsm/kg) kèm tăng natri máu thì chẩn đoán xác định Đái tháo nhạt.</li>
+                            <li>Làm nghiệm pháp tiêm Desmopressin (dDAVP) để phân biệt:
+                                <ul class="list-circle pl-5 text-[11px] mt-0.5">
+                                    <li>ALTT niệu tăng &gt; 50% sau tiêm dDAVP: Đái tháo nhạt trung ương (thiếu hụt ADH tuyến yên).</li>
+                                    <li>ALTT niệu không tăng hoặc tăng &lt; 10% sau tiêm dDAVP: Đái tháo nhạt do thận (kháng ADH tại ống thận).</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                html += `<div class="space-y-3">`;
+
+                if (isDI) {
+                    html += `
+                        <div class="p-3 bg-rose-50 border-l-4 border-rose-500 rounded-r-lg">
+                            <strong class="text-rose-800 block text-xs md:text-sm"><i class="fa-solid fa-toilet mr-1"></i> Nghi ngờ Đái tháo nhạt (Diabetes Insipidus):</strong>
+                            <p class="text-slate-600 mt-0.5">Mất nước tự do số lượng lớn qua nước tiểu do thiếu hụt bài tiết ADH (Trung ương) hoặc kháng ADH (Tại thận). Khuyến cáo:
+                                <br>• <strong>Đái tháo nhạt trung ương</strong>: Sử dụng Desmopressin (dDAVP) tiêm dưới da 1 - 2 µg hoặc dùng dạng xịt/uống.
+                                <br>• <strong>Đái tháo nhạt tại thận</strong>: Ngưng các thuốc gây độc (như Lithium), sử dụng lợi tiểu Thiazide để kích thích tái hấp thu nước bù trừ ở ống lượn gần.
+                            </p>
+                        </div>
+                    `;
+                }
+
+                if (isDehydration) {
+                    html += `
+                        <div class="p-3 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
+                            <strong class="text-amber-800 block text-xs md:text-sm"><i class="fa-solid fa-droplet-slash mr-1"></i> Mất nước không bù đủ (Qua da/phổi/tiêu hóa):</strong>
+                            <p class="text-slate-600 mt-0.5">Bệnh nhân mất nước tự do qua đường thở (thở nhanh, thở máy), mồ hôi hoặc tiêu chảy dịch nhược trương mà không tiếp cận được nguồn nước uống (hôn mê, già yếu, liệt). Khuyến cáo: Bù nước tự do qua đường ruột (uống hoặc bơm nước chín qua sonde) là <strong>an toàn và hiệu quả nhất</strong> để tránh phù não.</p>
+                        </div>
+                    `;
+                }
+
+                if (isIatrogenic) {
+                    html += `
+                        <div class="p-3 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                            <strong class="text-red-800 block text-xs md:text-sm"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Do quá tải Natri (Iatrogenic hypernatremia):</strong>
+                            <p class="text-slate-600 mt-0.5">Quá liều dịch truyền chứa natri nồng độ cao (NaCl 3%, Bicarbonate 8.4% hoặc 4.2%). Khuyến cáo: Chỉ định dùng <strong>lợi tiểu quai (Furosemide 20 - 40 mg)</strong> truyền tĩnh mạch để thải natri dư thừa, song song bù nước tự do bằng Glucose 5% tĩnh mạch.</p>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            }
+
+            outputEl.innerHTML = html;
+        }
+
+
+        // KHỞI TẠO TRANG
+        window.onload = function() {
+            let hash = window.location.hash;
+            if (hash === '#hyper') {
+                switchTab('hyper');
+            } else if (hash === '#info') {
+                switchTab('info');
+            } else {
+                switchTab('hypo'); // Mặc định mở hypo
+            }
+        };
+
+        // Bắt sự kiện hash thay đổi
+        window.onhashchange = function() {
+            let hash = window.location.hash;
+            if (hash === '#hyper') {
+                switchTab('hyper');
+            } else if (hash === '#info') {
+                switchTab('info');
+            } else if (hash === '#hypo') {
+                switchTab('hypo');
+            }
+        };
+    </script>
+</body>
+</html>
